@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Konstantin Romaneev](https://up.htmlacademy.ru/ecmascript/10/user/822905).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Миловидов](https://up.htmlacademy.ru/ecmascript/10/user/1144203).
 
 ---
 
