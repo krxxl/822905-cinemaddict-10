@@ -1,17 +1,30 @@
-export const createSiteMenuTemplate = () => {
+const filterTemplate = (filter) => {
+  const {name, count, shortname} = filter;
+
+  if (name === `Stats`) {
+    return `<a href="#${shortname}" class="main-navigation__item main-navigation__item--additional">${name}</a>`;
+  } else {
+    return `<a href="#${shortname}" class="main-navigation__item main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
+  }
+};
+
+export const createSiteNavigationTemplate = (filters) => {
+
+  const filter = filters.map((it) => filterTemplate(it)).join(`\n`);
+
   return (
     `<nav class="main-navigation">
-    <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-    <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">13</span></a>
-    <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">4</span></a>
-    <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">8</span></a>
-    <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
-  </nav>
+    ${filter}
+   </nav>`
+  );
+};
 
-  <ul class="sort">
+export const createSiteSortTemplate = () => {
+  return (
+    `<ul class="sort">
     <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
     <li><a href="#" class="sort__button">Sort by date</a></li>
     <li><a href="#" class="sort__button">Sort by rating</a></li>
-  </ul>`
+    </ul>`
   );
 };
