@@ -27,7 +27,7 @@ const commentTemplate = (comment) => {
 
 
 const createPopupTemplate = (card) => {
-  const {title, raiting, year, duration, genres, poster, countComments, description, age, director, writers, actors, date, country, comments} = card;
+  const {title, rating, year, duration, genres, poster, countComments, description, age, director, writers, actors, date, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
   const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
   return (
@@ -52,7 +52,7 @@ const createPopupTemplate = (card) => {
               </div>
 
               <div class="film-details__rating">
-                <p class="film-details__total-rating">${raiting}</p>
+                <p class="film-details__total-rating">${rating}</p>
               </div>
             </div>
 

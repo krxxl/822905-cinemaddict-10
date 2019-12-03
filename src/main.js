@@ -7,7 +7,7 @@ import SiteNavigationComponent from './components/menu.js';
 import ShowMoreButtonComponent from './components/show-more-button.js';
 import CardComponent from './components/card.js';
 import PopupComponent from './components/popup.js';
-import {generateCard, generateCards} from './mock/card.js';
+import {generateCards} from './mock/card.js';
 import {generateFilters, filmsQuantity, getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils.js';
 
@@ -42,8 +42,8 @@ const renderCard = (container, card) => {
 };
 
 
-const getSortByRaiting = (arr) => {
-  return arr.sort((a, b) => a.raiting > b.raiting ? -1 : 1);
+const getSortByRating = (arr) => {
+  return arr.sort((a, b) => a.rating > b.rating ? -1 : 1);
 };
 
 const getSortByComments = (arr) => {
@@ -71,7 +71,7 @@ render(siteFilmListElement, mainList.getElement(), RenderPosition.BEFOREEND);
 const siteMainListElement = siteMainElement.querySelector(`.films-list`);
 const siteFilmListContainerElement = siteMainListElement.querySelector(`.films-list__container`);
 
-const showMoreButton = new ShowMoreButtonComponent()
+const showMoreButton = new ShowMoreButtonComponent();
 render(siteFilmListElement, showMoreButton.getElement(), RenderPosition.BEFOREEND);
 
 const cards = generateCards(CARD_COUNT);
@@ -79,27 +79,26 @@ const cards = generateCards(CARD_COUNT);
 let showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
 cards.slice(0, showingCardsCount)
 .forEach((card) => renderCard(siteFilmListContainerElement, card));
-// render(siteFilmListContainerElement, new CardComponent(card).getElement(), RenderPosition.BEFOREEND)
 
 
-let countOfAllRaiting = 0;
+let countOfAllRating = 0;
 let countOfAllComment = 0;
 
 cards.forEach((card) => {
-  countOfAllRaiting += +card.raiting;
+  countOfAllRating += +card.rating;
   countOfAllComment += +card.countComments;
 });
 
-const sortByRaiting = getSortByRaiting(cards);
+const sortByRating = getSortByRating(cards);
 const sortByComments = getSortByComments(cards);
 
 const topRated = new TopRatedComponent();
-if (countOfAllRaiting > 0) {
+if (countOfAllRating > 0) {
   render(siteFilmListElement, topRated.getElement(), RenderPosition.BEFOREEND);
 }
 
 const siteTopRatedElements = topRated.getElement().querySelector(`#top-rated .films-list__container`);
-sortByRaiting.slice(0, 2)
+sortByRating.slice(0, 2)
 .forEach((card) => renderCard(siteTopRatedElements, card));
 
 const mostCommented = new MostCommentedComponent();
