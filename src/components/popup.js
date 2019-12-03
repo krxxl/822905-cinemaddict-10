@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const genresTemplate = (genre) => {
   return (
     `<span class="film-details__genre">${genre}</span>`
@@ -24,7 +26,7 @@ const commentTemplate = (comment) => {
 };
 
 
-export const createPopupTemplate = (card) => {
+const createPopupTemplate = (card) => {
   const {title, raiting, year, duration, genres, poster, countComments, description, age, director, writers, actors, date, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
   const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
@@ -147,3 +149,26 @@ export const createPopupTemplate = (card) => {
   </section>`
   );
 };
+
+export default class Popup {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
