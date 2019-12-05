@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const filterTemplate = (filter) => {
   const {name, count, shortname} = filter;
 
@@ -8,23 +10,43 @@ const filterTemplate = (filter) => {
   }
 };
 
-export const createSiteNavigationTemplate = (filters) => {
+const createSiteNavigationTemplate = (filters) => {
 
   const filter = filters.map((it) => filterTemplate(it)).join(`\n`);
 
   return (
     `<nav class="main-navigation">
     ${filter}
-   </nav>`
-  );
-};
-
-export const createSiteSortTemplate = () => {
-  return (
-    `<ul class="sort">
+   </nav>
+   <ul class="sort">
     <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
     <li><a href="#" class="sort__button">Sort by date</a></li>
     <li><a href="#" class="sort__button">Sort by rating</a></li>
-    </ul>`
+    </ul>
+   `
   );
 };
+
+
+export default class Filter {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteNavigationTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

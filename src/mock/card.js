@@ -148,7 +148,7 @@ const generateCard = () => {
   let countComment = getCountComments();
   return {
     title: getRandomArrayItem(filmNames),
-    raiting: getRandomFloatNumber(0, 10),
+    rating: getRandomFloatNumber(0, 10),
     year: getRandomYear(),
     duration: getDuration(),
     genres: getGenres(getRandomIntegerNumber(1, 3)),
