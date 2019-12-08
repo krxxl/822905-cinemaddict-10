@@ -5,12 +5,13 @@ import TopRatedComponent from './components/top-rated.js';
 import NoListComponent from './components/no-cards.js';
 import MostCommentedComponent from './components/most-commented.js';
 import SiteNavigationComponent from './components/menu.js';
+import SiteSortComponent from './components/sort.js';
 import ShowMoreButtonComponent from './components/show-more-button.js';
 import CardComponent from './components/card.js';
 import PopupComponent from './components/popup.js';
 import {generateCards} from './mock/card.js';
 import {generateFilters, filmsQuantity, getRank} from './mock/filter.js';
-import {render, RenderPosition} from './utils.js';
+import {render, remove, RenderPosition} from './utils/render.js';
 
 const CARD_COUNT = 22;
 const SHOWING_CARDS_COUNT_ON_START = 5;
@@ -21,16 +22,13 @@ const renderCard = (container, card) => {
   const cardComponent = new CardComponent(card);
   const popupComponent = new PopupComponent(card);
 
-  const cardPoster = cardComponent.getElement().querySelector(`.film-card__poster`);
-  const cardTitle = cardComponent.getElement().querySelector(`.film-card__title`);
-  const cardComment = cardComponent.getElement().querySelector(`.film-card__comments`);
   const siteFooterElement = document.querySelector(`.footer`);
 
   const onEscKeyDown = (evt) => {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      popupComponent.getElement().remove();
+      remove(popupComponent);
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
@@ -42,13 +40,17 @@ const renderCard = (container, card) => {
     });
   };
 
-  [cardPoster, cardTitle, cardComment].forEach((target) => target.addEventListener(`click`, () => {
-    openPopup();
-  }));
 
-  const closeButtonPopup = popupComponent.getElement().querySelector(`.film-details__close-btn`);
-  closeButtonPopup.addEventListener(`click`, () => {
-    popupComponent.getElement().remove();
+  cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
+    openPopup();
+  });
+
+  // const closeButtonPopup = popupComponent.getElement().querySelector(`.film-details__close-btn`);
+  // closeButtonPopup.addEventListener(`click`, () => {
+  //   remove(popupComponent);
+  // });
+  popupComponent.setClosePopupHandler(() => {
+    remove(popupComponent);
   });
 
   render(container, cardComponent.getElement(), RenderPosition.BEFOREEND);
@@ -56,7 +58,7 @@ const renderCard = (container, card) => {
 
 
 const getSortByRating = (arr) => {
-  return arr.sort((a, b) => a.rating > b.rating ? -1 : 1);
+  return arr.sort((a, b) => +a.rating > +b.rating ? -1 : 1);
 };
 
 const getSortByComments = (arr) => {
@@ -71,6 +73,7 @@ render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BE
 
 const filters = generateFilters();
 render(siteMainElement, new SiteNavigationComponent(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SiteSortComponent().getElement(), RenderPosition.BEFOREEND);
 
 const cardList = new CardListsComponent();
 render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
@@ -104,8 +107,8 @@ if (cards.length === 0) {
     countOfAllComment += +card.countComments;
   });
 
-  const sortByRating = getSortByRating(cards);
-  const sortByComments = getSortByComments(cards);
+  const sortByRating = getSortByRating(cards.slice());
+  const sortByComments = getSortByComments(cards.slice());
 
   const topRated = new TopRatedComponent();
   if (countOfAllRating > 0) {
@@ -125,16 +128,15 @@ if (cards.length === 0) {
   sortByComments.slice(0, 2)
   .forEach((card) => renderCard(siteMostCommentsElements, card));
 
-  showMoreButton.getElement().addEventListener(`click`, () => {
+  showMoreButton.setShowMoreCardsHandler(() => {
     const prevCardsCount = showingCardsCount;
     showingCardsCount = showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
     cards.slice(prevCardsCount, showingCardsCount)
-      .forEach((card) => render(siteFilmListContainerElement, new CardComponent(card).getElement(), RenderPosition.BEFOREEND));
+      .forEach((card) => renderCard(siteFilmListContainerElement, card));
 
     if (showingCardsCount >= cards.length) {
-      showMoreButton.getElement().remove();
-      showMoreButton.removeElement();
+      remove(showMoreButton);
     }
   });
 }

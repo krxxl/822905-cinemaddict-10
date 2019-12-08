@@ -33,4 +33,12 @@ export default class Card extends AbstractComponent {
     return createCardTemplate(this._card);
   }
 
+  setPopupOpenHadlerHandler(arr, handler) {
+    arr.forEach((element) => {
+      this.getElement().querySelector(element)
+      .addEventListener(`click`, handler);
+    });
+    // this.getElement().querySelector(`.film-card__poster`)
+    //   .addEventListener(`click`, handler);
+  }
 }
