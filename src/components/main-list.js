@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
 const createMainListTemplate = () => {
   return (
@@ -9,24 +9,8 @@ const createMainListTemplate = () => {
   );
 };
 
-export default class MainList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class MainList extends AbstractComponent {
   getTemplate() {
     return createMainListTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

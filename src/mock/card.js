@@ -106,7 +106,7 @@ const getDuration = () => {
 };
 
 const getCountComments = () => {
-  return getRandomIntegerNumber(0, 5);
+  return getRandomIntegerNumber(0, 10);
 };
 
 
