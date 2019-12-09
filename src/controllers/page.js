@@ -47,8 +47,8 @@ export default class PageController {
     this._noListComponent = new NoListComponent();
     this._topRatedComponent = new TopRatedComponent();
     this._mostCommentedComponent = new MostCommentedComponent();
-    this._cardComponent = new CardComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
+    this._mainListComponent = new MainListComponent();
   }
 
   render(cards) {
@@ -66,15 +66,15 @@ export default class PageController {
     const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 
     if (cards.length === 0) {
-      render(container, new NoListComponent().getElement(), RenderPosition.BEFOREEND);
+      render(container, this._noListComponent.getElement(), RenderPosition.BEFOREEND);
     } else {
 
-      const mainList = new MainListComponent();
+      const mainList = this._mainListComponent;
       render(container, mainList.getElement(), RenderPosition.BEFOREEND);
 
       const siteFilmListContainerElement = mainList.getElement().querySelector(`.films-list__container`);
 
-      const showMoreButton = new ShowMoreButtonComponent();
+      const showMoreButton = this._showMoreButtonComponent;
       render(mainList.getElement(), showMoreButton.getElement(), RenderPosition.BEFOREEND);
 
       let showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
@@ -93,7 +93,7 @@ export default class PageController {
       const sortByRating = getSortByRating(cards.slice());
       const sortByComments = getSortByComments(cards.slice());
 
-      const topRated = new TopRatedComponent();
+      const topRated = this._topRatedComponent;
       if (countOfAllRating > 0) {
         render(container, topRated.getElement(), RenderPosition.BEFOREEND);
       }
@@ -102,7 +102,7 @@ export default class PageController {
       sortByRating.slice(0, 2)
       .forEach((card) => renderCard(siteTopRatedElements, card));
 
-      const mostCommented = new MostCommentedComponent();
+      const mostCommented = this._mostCommentedComponent;
       if (countOfAllComment > 0) {
         render(container, mostCommented.getElement(), RenderPosition.BEFOREEND);
       }
