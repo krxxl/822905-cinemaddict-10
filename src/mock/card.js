@@ -1,5 +1,4 @@
 import {getRandomIntegerNumber} from '../utils.js';
-import {MonthNames} from '../const.js';
 
 const filmNames = [
   `Побег из Шоушенка`,
@@ -84,12 +83,6 @@ const getRandomFloatNumber = (min, max) => {
   return (min + max * Math.random()).toFixed(1);
 };
 
-const getRandomYear = () => {
-  const firstMovie = 1985;
-  const curDate = new Date();
-  return getRandomIntegerNumber(firstMovie, curDate.getFullYear());
-};
-
 const getDuration = () => {
   let randomTime = getRandomIntegerNumber(0, 180);
   let hours = randomTime / 60 ^ 0;
@@ -144,12 +137,18 @@ const generateComments = (count) => {
   return commentsArray;
 };
 
+const getRandomDate = (start, end) => {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+};
+
 const generateCard = () => {
   let countComment = getCountComments();
+  const randomDate = getRandomDate(new Date(1989, 0, 1), new Date());
+
   return {
     title: getRandomArrayItem(filmNames),
     rating: getRandomFloatNumber(0, 10),
-    year: getRandomYear(),
+    date: randomDate,
     duration: getDuration(),
     genres: getGenres(getRandomIntegerNumber(1, 3)),
     poster: `${picUrl}${getRandomArrayItem(posterSrc)}`,
@@ -159,7 +158,6 @@ const generateCard = () => {
     director: getRandomArrayItem(directorNames),
     writers: generateString(getRandomIntegerNumber(1, 3), directorNames),
     actors: generateString(getRandomIntegerNumber(1, 3), directorNames),
-    date: `${getRandomIntegerNumber(1, 30)} ${getRandomArrayItem(MonthNames)}`,
     country: getRandomArrayItem(countryNames),
     comments: generateComments(countComment)
   };

@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component.js';
+import {MonthNames} from '../const.js';
 
 const genresTemplate = (genre) => {
   return (
@@ -27,9 +28,10 @@ const commentTemplate = (comment) => {
 
 
 const createPopupTemplate = (card) => {
-  const {title, rating, year, duration, genres, poster, countComments, description, age, director, writers, actors, date, country, comments} = card;
+  const {title, rating, date, duration, genres, poster, countComments, description, age, director, writers, actors, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
   const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
+  const fullDate = `${date.getDate()} ${MonthNames[date.getMonth()]} ${date.getFullYear()}`;
   return (
     `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -71,7 +73,7 @@ const createPopupTemplate = (card) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${date} ${year}</td>
+                <td class="film-details__cell">${fullDate}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
