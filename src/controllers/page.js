@@ -3,50 +3,20 @@ import TopRatedComponent from '../components/top-rated.js';
 import NoListComponent from '../components/no-cards.js';
 import MostCommentedComponent from '../components/most-commented.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
-import CardComponent from '../components/card.js';
-import PopupComponent from '../components/popup.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {SortType} from '../components/sort.js';
+import MovieController from './card.js';
 
 const SHOWING_CARDS_COUNT_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 
-const renderCard = (container, card) => {
-  const cardComponent = new CardComponent(card);
-  const popupComponent = new PopupComponent(card);
 
-  const siteFooterElement = document.querySelector(`.footer`);
+const renderCards = (container, cards) => {
+  return cards.forEach((card) => {
+    const movieController = new MovieController(container);
+    movieController.render(card);
 
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      remove(popupComponent);
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const openPopup = () => {
-    render(siteFooterElement, popupComponent.getElement(), RenderPosition.AFTERBEGIN);
-    document.addEventListener(`keydown`, (evt) => {
-      onEscKeyDown(evt);
-    });
-  };
-
-  cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
-    openPopup();
-  });
-
-  popupComponent.setClosePopupHandler(() => {
-    remove(popupComponent);
-  });
-
-  render(container, cardComponent.getElement(), RenderPosition.BEFOREEND);
-};
-
-const renderCards = (taskListElement, tasks) => {
-  tasks.forEach((task) => {
-    renderCard(taskListElement, task);
+    return movieController;
   });
 };
 
