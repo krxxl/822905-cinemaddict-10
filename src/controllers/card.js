@@ -3,8 +3,9 @@ import PopupComponent from '../components/popup.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 
 export default class MovieController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
   }
 
   render(card) {
@@ -39,6 +40,9 @@ export default class MovieController {
     });
 
     render(this._container, cardComponent.getElement(), RenderPosition.BEFOREEND);
-  };
 
+    // this._cardComponent.setWatchListButtonClickHandler(() => {
+    //   this._onDataChange(NewCard, OldCard);
+    // });
+  }
 }
