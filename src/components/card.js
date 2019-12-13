@@ -1,13 +1,13 @@
 import AbstractComponent from './abstract-component.js';
 
 const createCardTemplate = (card) => {
-  const {title, rating, year, duration, genres, poster, countComments, description} = card;
+  const {title, rating, date, duration, genres, poster, countComments, description} = card;
   return (
     `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${year}</span>
+      <span class="film-card__year">${date.getFullYear()}</span>
       <span class="film-card__duration">${duration}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>

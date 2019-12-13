@@ -16,7 +16,8 @@ const siteMainElement = document.querySelector(`.main`);
 render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BEFOREEND);
 const filters = generateFilters();
 render(siteMainElement, new SiteNavigationComponent(filters).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new SiteSortComponent().getElement(), RenderPosition.BEFOREEND);
+const sorts = new SiteSortComponent();
+render(siteMainElement, sorts.getElement(), RenderPosition.BEFOREEND);
 const cardList = new CardListsComponent();
 render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
 
@@ -29,6 +30,6 @@ statics.textContent = `${CARD_COUNT} movies inside`;
 const rank = document.querySelector(`.profile__rating`);
 rank.textContent = `${getRank(filmsQuantity)}`;
 
-const pageController = new PageController(cardList);
+const pageController = new PageController(cardList, sorts);
 
 pageController.render(cards);
