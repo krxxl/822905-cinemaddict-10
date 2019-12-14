@@ -41,8 +41,28 @@ export default class MovieController {
 
     render(this._container, cardComponent.getElement(), RenderPosition.BEFOREEND);
 
-    // this._cardComponent.setWatchListButtonClickHandler(() => {
-    //   this._onDataChange(NewCard, OldCard);
-    // });
+    let isInMainlist = false;
+
+    cardComponent.setWatchListButtonClickHandler((evt) => {
+      evt.preventDefault();
+      const watchlist = document.querySelector('#watchlist').querySelector('.main-navigation__item-count');
+      const watchlistVal = watchlist.innerText;
+      if (!isInMainlist) {
+        watchlist.innerText = +watchlistVal + 1;
+        isInMainlist = true;
+      }
+    });
+
+    let isFavorite = false;
+
+    cardComponent.setFavoriteButtonClickHandler((evt) => {
+      evt.preventDefault();
+      const favorites = document.querySelector('#favorites').querySelector('.main-navigation__item-count');
+      const favoritesVal = document.querySelector('#favorites').querySelector('.main-navigation__item-count').innerText;
+      if (!isFavorite) {
+        favorites.innerText = +favoritesVal + 1;
+        isFavorite = true;
+      }
+    });
   }
 }
