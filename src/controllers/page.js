@@ -143,10 +143,8 @@ export default class PageController {
     if (index === -1) {
       return;
     }
-    console.log(oldData);
-    console.log(newData);
-    this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
 
+    this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
     CardController.render(this._cards[index]);
   }
 }

@@ -41,18 +41,18 @@ export default class MovieController {
 
     render(this._container, cardComponent.getElement(), RenderPosition.BEFOREEND);
 
-    let isInMainlist = false;
+    // let isInMainlist = false;
 
     cardComponent.setWatchListButtonClickHandler((evt) => {
       evt.preventDefault();
       const watchlist = document.querySelector(`#watchlist`).querySelector(`.main-navigation__item-count`);
       const watchlistVal = watchlist.innerText;
-      if (!isInMainlist) {
+      if (!card.isInWatchlist) {
         watchlist.innerText = +watchlistVal + 1;
-        isInMainlist = true;
+        // isInMainlist = true;
       } else {
         watchlist.innerText = +watchlistVal - 1;
-        isInMainlist = false;
+        // isInMainlist = false;
       }
       this._onDataChange(this, card, Object.assign({}, card, {
         isInWatchlist: !card.isInWatchlist,
