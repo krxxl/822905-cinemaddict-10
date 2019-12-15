@@ -42,6 +42,8 @@ export default class Card extends AbstractSmartComponent {
     this._card = card;
 
     this._subscribeOnEvents();
+
+    this.setWatchListButtonClickHandler = this.setWatchListButtonClickHandler.bind(this);
   }
 
   getTemplate() {

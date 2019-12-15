@@ -57,6 +57,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         isInWatchlist: !card.isInWatchlist,
       }));
+      this.rerender();
     });
 
     let isWatched = false;
