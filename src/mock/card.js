@@ -154,12 +154,15 @@ const generateCard = () => {
     poster: `${picUrl}${getRandomArrayItem(posterSrc)}`,
     countComments: countComment,
     description: generateString(getRandomIntegerNumber(1, 3), strArray),
+    isInWatchlist: Math.random() > 0.5,
+    isWatched: Math.random() > 0.5,
+    isFavorite: Math.random() > 0.5,
     age: `${getRandomIntegerNumber(0, 99)}+`,
     director: getRandomArrayItem(directorNames),
     writers: generateString(getRandomIntegerNumber(1, 3), directorNames),
     actors: generateString(getRandomIntegerNumber(1, 3), directorNames),
     country: getRandomArrayItem(countryNames),
-    comments: generateComments(countComment)
+    comments: generateComments(countComment),
   };
 };
 

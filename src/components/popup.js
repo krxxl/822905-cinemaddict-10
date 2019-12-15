@@ -28,10 +28,22 @@ const commentTemplate = (comment) => {
 
 
 const createPopupTemplate = (card) => {
-  const {title, rating, date, duration, genres, poster, countComments, description, age, director, writers, actors, country, comments} = card;
+  const {title, rating, date, duration, genres, poster, countComments, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
   const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
   const fullDate = `${date.getDate()} ${MonthNames[date.getMonth()]} ${date.getFullYear()}`;
+  let inWatchlist = ``;
+  let watched = ``;
+  let favorite = ``;
+  if (isInWatchlist) {
+    inWatchlist = `checked`;
+  }
+  if (isWatched) {
+    watched = `checked`;
+  }
+  if (isFavorite) {
+    favorite = `checked`;
+  }
   return (
     `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -97,13 +109,13 @@ const createPopupTemplate = (card) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+          <input type="checkbox" class="film-details__control-input visually-hidden" ${inWatchlist} id="watchlist" name="watchlist">
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+          <input type="checkbox" class="film-details__control-input visually-hidden" ${watched} id="watched" name="watched">
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+          <input type="checkbox" class="film-details__control-input visually-hidden" ${favorite} id="favorite" name="favorite">
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>

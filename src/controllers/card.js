@@ -45,24 +45,53 @@ export default class MovieController {
 
     cardComponent.setWatchListButtonClickHandler((evt) => {
       evt.preventDefault();
-      const watchlist = document.querySelector('#watchlist').querySelector('.main-navigation__item-count');
+      const watchlist = document.querySelector(`#watchlist`).querySelector(`.main-navigation__item-count`);
       const watchlistVal = watchlist.innerText;
       if (!isInMainlist) {
         watchlist.innerText = +watchlistVal + 1;
         isInMainlist = true;
+      } else {
+        watchlist.innerText = +watchlistVal - 1;
+        isInMainlist = false;
       }
+      this._onDataChange(this, card, Object.assign({}, card, {
+        isInWatchlist: !card.isInWatchlist,
+      }));
+    });
+
+    let isWatched = false;
+
+    cardComponent.setMarkWatchedButtonClickHandler((evt) => {
+      evt.preventDefault();
+      const watched = document.querySelector(`#history`).querySelector(`.main-navigation__item-count`);
+      const watchedVal = document.querySelector(`#history`).querySelector(`.main-navigation__item-count`).innerText;
+      if (!isWatched) {
+        watched.innerText = +watchedVal + 1;
+        isWatched = true;
+      } else {
+        watched.innerText = +watchedVal - 1;
+        isWatched = false;
+      }
+      this._onDataChange(this, card, Object.assign({}, card, {
+        isFavorite: !card.isFavorite,
+      }));
     });
 
     let isFavorite = false;
-
     cardComponent.setFavoriteButtonClickHandler((evt) => {
       evt.preventDefault();
-      const favorites = document.querySelector('#favorites').querySelector('.main-navigation__item-count');
-      const favoritesVal = document.querySelector('#favorites').querySelector('.main-navigation__item-count').innerText;
+      const favorites = document.querySelector(`#favorites`).querySelector(`.main-navigation__item-count`);
+      const favoritesVal = document.querySelector(`#favorites`).querySelector(`.main-navigation__item-count`).innerText;
       if (!isFavorite) {
         favorites.innerText = +favoritesVal + 1;
         isFavorite = true;
+      } else {
+        favorites.innerText = +favoritesVal - 1;
+        isFavorite = false;
       }
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isFavorite: !card.isFavorite,
+      // }));
     });
   }
 }

@@ -1,7 +1,19 @@
 import AbstractComponent from './abstract-component.js';
 
 const createCardTemplate = (card) => {
-  const {title, rating, date, duration, genres, poster, countComments, description} = card;
+  const {title, rating, date, duration, genres, poster, countComments, description, isInWatchlist, isWatched, isFavorite} = card;
+  let classWatchlist = ``;
+  let classWatched = ``;
+  let classFavorite = ``;
+  if (isInWatchlist) {
+    classWatchlist = `film-card__controls-item--active`;
+  }
+  if (isWatched) {
+    classWatched = `film-card__controls-item--active`;
+  }
+  if (isFavorite) {
+    classFavorite = `film-card__controls-item--active`;
+  }
   return (
     `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
@@ -15,9 +27,9 @@ const createCardTemplate = (card) => {
     <p class="film-card__description">${description}</p>
     <a class="film-card__comments">${countComments} comments</a>
     <form class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${classWatchlist}">Add to watchlist</button>
+      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${classWatched}">Mark as watched</button>
+      <button class="film-card__controls-item button film-card__controls-item--favorite ${classFavorite}">Mark as favorite</button>
     </form>
   </article>`
   );
