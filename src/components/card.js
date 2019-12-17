@@ -43,7 +43,6 @@ export default class Card extends AbstractSmartComponent {
 
     this._subscribeOnEvents();
 
-    this.setWatchListButtonClickHandler = this.setWatchListButtonClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -63,8 +62,11 @@ export default class Card extends AbstractSmartComponent {
 
   setWatchListButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
-      .addEventListener(`click`, handler);
-    // this.rerender();
+      .addEventListener(`click`, (evt) => {
+        handler(evt);
+        this.rerender();
+      });
+    // ;
   }
 
   setMarkWatchedButtonClickHandler(handler) {

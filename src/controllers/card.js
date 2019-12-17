@@ -1,17 +1,22 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
-import {render, remove, RenderPosition} from '../utils/render.js';
+import {render, remove, replace, RenderPosition} from '../utils/render.js';
 
 export default class MovieController {
   constructor(container, onDataChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+
+    this._cardComponent = null;
+    this._popupComponent = null;
   }
 
   render(card) {
+    const oldCardComponent = this._cardComponent;
+    const oldPopupComponent = this._popupComponent;
 
-    const cardComponent = new CardComponent(card);
-    const popupComponent = new PopupComponent(card);
+    this._cardComponent = new CardComponent(card);
+    this._popupComponent = new PopupComponent(card);
 
     const siteFooterElement = document.querySelector(`.footer`);
 
@@ -19,80 +24,79 @@ export default class MovieController {
       const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
       if (isEscKey) {
-        remove(popupComponent);
+        remove(this._popupComponent);
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
 
     const openPopup = () => {
-      render(siteFooterElement, popupComponent.getElement(), RenderPosition.AFTERBEGIN);
+      render(siteFooterElement, this._popupComponent.getElement(), RenderPosition.AFTERBEGIN);
       document.addEventListener(`keydown`, (evt) => {
         onEscKeyDown(evt);
       });
     };
 
-    cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
+    this._cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
       openPopup();
     });
 
-    popupComponent.setClosePopupHandler(() => {
-      remove(popupComponent);
+    this._popupComponent.setClosePopupHandler(() => {
+      remove(this._popupComponent);
     });
 
-    render(this._container, cardComponent.getElement(), RenderPosition.BEFOREEND);
+    // render(this._container, this._cardComponent.getElement(), RenderPosition.BEFOREEND);
 
-    // let isInMainlist = false;
 
-    cardComponent.setWatchListButtonClickHandler((evt) => {
+    this._cardComponent.setWatchListButtonClickHandler((evt) => {
       evt.preventDefault();
       const watchlist = document.querySelector(`#watchlist`).querySelector(`.main-navigation__item-count`);
       const watchlistVal = watchlist.innerText;
       if (!card.isInWatchlist) {
         watchlist.innerText = +watchlistVal + 1;
-        // isInMainlist = true;
       } else {
         watchlist.innerText = +watchlistVal - 1;
-        // isInMainlist = false;
       }
       this._onDataChange(this, card, Object.assign({}, card, {
         isInWatchlist: !card.isInWatchlist,
       }));
-      this.rerender();
     });
 
-    let isWatched = false;
-
-    cardComponent.setMarkWatchedButtonClickHandler((evt) => {
+    this._cardComponent.setMarkWatchedButtonClickHandler((evt) => {
       evt.preventDefault();
       const watched = document.querySelector(`#history`).querySelector(`.main-navigation__item-count`);
       const watchedVal = document.querySelector(`#history`).querySelector(`.main-navigation__item-count`).innerText;
-      if (!isWatched) {
+      if (!card.isWatched) {
         watched.innerText = +watchedVal + 1;
-        isWatched = true;
       } else {
         watched.innerText = +watchedVal - 1;
-        isWatched = false;
+      }
+      this._onDataChange(this, card, Object.assign({}, card, {
+        isWatched: !card.isWatched,
+      }));
+    });
+
+    this._cardComponent.setFavoriteButtonClickHandler((evt) => {
+      evt.preventDefault();
+      const favorites = document.querySelector(`#favorites`).querySelector(`.main-navigation__item-count`);
+      const favoritesVal = document.querySelector(`#favorites`).querySelector(`.main-navigation__item-count`).innerText;
+      if (!card.isFavorite) {
+        favorites.innerText = +favoritesVal + 1;
+      } else {
+        favorites.innerText = +favoritesVal - 1;
       }
       this._onDataChange(this, card, Object.assign({}, card, {
         isFavorite: !card.isFavorite,
       }));
     });
 
-    let isFavorite = false;
-    cardComponent.setFavoriteButtonClickHandler((evt) => {
-      evt.preventDefault();
-      const favorites = document.querySelector(`#favorites`).querySelector(`.main-navigation__item-count`);
-      const favoritesVal = document.querySelector(`#favorites`).querySelector(`.main-navigation__item-count`).innerText;
-      if (!isFavorite) {
-        favorites.innerText = +favoritesVal + 1;
-        isFavorite = true;
-      } else {
-        favorites.innerText = +favoritesVal - 1;
-        isFavorite = false;
-      }
-      // this._onDataChange(this, card, Object.assign({}, card, {
-      //   isFavorite: !card.isFavorite,
-      // }));
-    });
+    if (oldPopupComponent && oldCardComponent) {
+      replace(this._cardComponent, oldCardComponent);
+      replace(this._popupComponent, oldPopupComponent);
+
+    } else {
+
+      render(this._container, this._cardComponent.getElement(), RenderPosition.BEFOREEND);
+    }
+
   }
 }

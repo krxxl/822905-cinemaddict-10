@@ -145,6 +145,7 @@ export default class PageController {
     }
 
     this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
+    console.log((this._cards[index]));
     CardController.render(this._cards[index]);
   }
 }
