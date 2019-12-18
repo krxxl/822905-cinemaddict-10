@@ -147,11 +147,11 @@ const generateCard = () => {
 
   return {
     title: getRandomArrayItem(filmNames),
+    poster: `${picUrl}${getRandomArrayItem(posterSrc)}`,
     rating: getRandomFloatNumber(0, 10),
     date: randomDate,
     duration: getDuration(),
     genres: getGenres(getRandomIntegerNumber(1, 3)),
-    poster: `${picUrl}${getRandomArrayItem(posterSrc)}`,
     countComments: countComment,
     description: generateString(getRandomIntegerNumber(1, 3), strArray),
     isInWatchlist: Math.random() > 0.5,

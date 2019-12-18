@@ -1,8 +1,8 @@
-// import AbstractComponent from './abstract-component.js';
-import AbstractSmartComponent from './abstract-smart-component.js';
+import AbstractComponent from './abstract-component.js';
+// import AbstractSmartComponent from './abstract-smart-component.js';
 
 const createCardTemplate = (card) => {
-  const {title, rating, date, duration, genres, poster, countComments, description, isInWatchlist, isWatched, isFavorite} = card;
+  const {title, poster, rating, date, duration, genres, countComments, description, isInWatchlist, isWatched, isFavorite} = card;
   let classWatchlist = ``;
   let classWatched = ``;
   let classFavorite = ``;
@@ -36,21 +36,14 @@ const createCardTemplate = (card) => {
   );
 };
 
-export default class Card extends AbstractSmartComponent {
+export default class Card extends AbstractComponent {
   constructor(card) {
     super();
     this._card = card;
-
-    this._subscribeOnEvents();
-
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
-  }
-
-  recoveryListeners() {
-    this._subscribeOnEvents();
   }
 
   setPopupOpenHadlerHandler(arr, handler) {
@@ -62,11 +55,7 @@ export default class Card extends AbstractSmartComponent {
 
   setWatchListButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
-      .addEventListener(`click`, (evt) => {
-        handler(evt);
-        this.rerender();
-      });
-    // ;
+      .addEventListener(`click`, handler);
   }
 
   setMarkWatchedButtonClickHandler(handler) {
@@ -77,12 +66,5 @@ export default class Card extends AbstractSmartComponent {
   setFavoriteButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--favorite`)
       .addEventListener(`click`, handler);
-  }
-
-  _subscribeOnEvents() {
-    // this.setPopupOpenHadlerHandler();
-    // this.setWatchListButtonClickHandler(handler);
-    // this.setMarkWatchedButtonClickHandler(handler);
-    // this.setFavoriteButtonClickHandler();
   }
 }
