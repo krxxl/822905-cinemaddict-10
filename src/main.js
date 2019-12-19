@@ -21,7 +21,6 @@ render(siteMainElement, sorts.getElement(), RenderPosition.BEFOREEND);
 const cardList = new CardListsComponent();
 render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
 
-
 const cards = generateCards(CARD_COUNT);
 
 const statics = document.querySelector(`.footer__statistics>p`);
