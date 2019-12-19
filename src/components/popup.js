@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {MonthNames} from '../const.js';
+import {formatDateWithMonths, formatDateComment} from '../utils/common.js';
 
 const genresTemplate = (genre) => {
   return (
@@ -18,7 +18,7 @@ const commentTemplate = (comment) => {
       <p class="film-details__comment-text">${text}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${commentDay}</span>
+        <span class="film-details__comment-day">${formatDateComment(commentDay)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
@@ -84,7 +84,6 @@ const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, countComments, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
   const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
-  const fullDate = `${date.getDate()} ${MonthNames[date.getMonth()]} ${date.getFullYear()}`;
   let inWatchlist = ``;
   let watched = ``;
   let favorite = ``;
@@ -144,7 +143,7 @@ const createPopupTemplate = (card) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${fullDate}</td>
+                <td class="film-details__cell">${formatDateWithMonths(date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>

@@ -7,6 +7,7 @@ import SiteSortComponent from './components/sort.js';
 import {generateCards} from './mock/card.js';
 import {generateFilters, filmsQuantity, getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
+import CardsModel from './models/movies.js';
 
 const CARD_COUNT = 22;
 
@@ -22,6 +23,8 @@ const cardList = new CardListsComponent();
 render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
 
 const cards = generateCards(CARD_COUNT);
+const cardsModel = new CardsModel();
+cardsModel.setTasks(cards);
 
 const statics = document.querySelector(`.footer__statistics>p`);
 statics.textContent = `${CARD_COUNT} movies inside`;
@@ -29,6 +32,6 @@ statics.textContent = `${CARD_COUNT} movies inside`;
 const rank = document.querySelector(`.profile__rating`);
 rank.textContent = `${getRank(filmsQuantity)}`;
 
-const pageController = new PageController(cardList, sorts);
+const pageController = new PageController(cardList, sorts, cardsModel);
 
-pageController.render(cards);
+pageController.render();

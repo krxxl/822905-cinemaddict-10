@@ -21,9 +21,10 @@ const renderCards = (container, cards, onDataChange, onViewChange) => {
 };
 
 export default class PageController {
-  constructor(container, sorts) {
+  constructor(container, sorts, cardsModel) {
     this._container = container;
     this._sortComponent = sorts;
+    this._cardsModel = cardsModel;
     this._showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
     this._noListComponent = new NoListComponent();
     this._topRatedComponent = new TopRatedComponent();
@@ -31,7 +32,7 @@ export default class PageController {
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._mainListComponent = new MainListComponent();
 
-    this._cards = [];
+    // this._cards = [];
     this._showedCardsControllers = [];
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -42,11 +43,12 @@ export default class PageController {
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
-  render(cards) {
+  render() {
 
-    this._cards = cards;
+    // this._cards = cards;
 
     const container = this._container.getElement();
+    const cards = this._cardsModel.getTasks();
 
 
     if (cards.length === 0) {
@@ -75,11 +77,11 @@ export default class PageController {
       return arr.sort((a, b) => +a.rating > +b.rating ? -1 : 1);
     };
 
-    this._cards.forEach((card) => {
+    this._cardsModel.getTasks().forEach((card) => {
       countOfAllRating += +card.rating;
     });
 
-    const sortByRating = getSortByRating(this._cards.slice());
+    const sortByRating = getSortByRating(this._cardsModel.getTasks().slice());
 
     const topRated = this._topRatedComponent;
     if (countOfAllRating > 0) {
@@ -95,7 +97,7 @@ export default class PageController {
   _renderMostComments() {
     let countOfAllComment = 0;
 
-    this._cards.forEach((card) => {
+    this._cardsModel.getTasks().forEach((card) => {
       countOfAllComment += +card.countComments;
     });
 
@@ -103,7 +105,7 @@ export default class PageController {
       return arr.sort((a, b) => a.countComments > b.countComments ? -1 : 1);
     };
 
-    const sortByComments = getSortByComments(this._cards.slice());
+    const sortByComments = getSortByComments(this._cardsModel.getTasks().slice());
 
     const mostCommented = this._mostCommentedComponent;
     if (countOfAllComment > 0) {
@@ -118,7 +120,7 @@ export default class PageController {
   }
 
   _renderLoadMoreButton() {
-    if (this._showingCardsCount >= this._cards.length) {
+    if (this._showingCardsCount >= this._cardsModel.getTasks().length) {
       return;
     }
 
@@ -128,10 +130,10 @@ export default class PageController {
       const prevCardsCount = this._showingCardsCount;
       this._showingCardsCount = this._showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
-      const newCards = renderCards(this._siteFilmListContainerElement, this._cards.slice(prevCardsCount, this._showingCardsCount), this._onDataChange, this._onViewChange);
+      const newCards = renderCards(this._siteFilmListContainerElement, this._cardsModel.getTasks().slice(prevCardsCount, this._showingCardsCount), this._onDataChange, this._onViewChange);
       this._showedCardsControllers = this._showedCardsControllers.concat(newCards);
 
-      if (this._showingCardsCount >= this._cards.length) {
+      if (this._showingCardsCount >= this._cardsModel.getTasks().length) {
         remove(this._showMoreButtonComponent);
       }
     });
@@ -142,13 +144,13 @@ export default class PageController {
 
     switch (sortType) {
       case SortType.RATING:
-        sortedCards = this._cards.slice().sort((a, b) => +a.rating > +b.rating ? -1 : 1);
+        sortedCards = this._cardsModel.getTasks().slice().sort((a, b) => +a.rating > +b.rating ? -1 : 1);
         break;
       case SortType.DATE:
-        sortedCards = this._cards.slice().sort((a, b) => a.date > b.date ? -1 : 1);
+        sortedCards = this._cardsModel.getTasks().slice().sort((a, b) => a.date > b.date ? -1 : 1);
         break;
       case SortType.DEFAULT:
-        sortedCards = this._cards.slice(0, this._showingCardsCount);
+        sortedCards = this._cardsModel.getTasks().slice(0, this._showingCardsCount);
         break;
     }
 
@@ -165,15 +167,16 @@ export default class PageController {
   }
 
   _onDataChange(CardController, oldData, newData) {
-    const index = this._cards.findIndex((it) => it === oldData);
+    // const index = this._cards.findIndex((it) => it === oldData);
+    const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      CardController.render(newData);
     }
 
-    this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
+    // this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
 
-    CardController.render(this._cards[index]);
+    // CardController.render(this._cards[index]);
   }
 
   _onViewChange() {
