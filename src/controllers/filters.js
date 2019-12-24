@@ -1,4 +1,4 @@
-import FilterComponent from '../components/filter.js';
+import FilterComponent from '../components/menu.js';
 import {FilterType} from '../const.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 import {getCardsByFilter} from '../utils/filter.js';
@@ -16,12 +16,12 @@ export default class FilterController {
 
   render() {
     const container = this._container;
-    const allCards = this._cardsModel.getTasksAll();
+    const allCards = this._cardsModel.getCardsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
         count: getCardsByFilter(allCards, filterType).length,
-        checked: filterType === this._activeFilterType,
+        // checked: filterType === this._activeFilterType,
       };
     });
     const oldComponent = this._filterComponent;
@@ -32,7 +32,7 @@ export default class FilterController {
     if (oldComponent) {
       replace(this._filterComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.BEFOREEND);
+      render(container, this._filterComponent.getElement(), RenderPosition.BEFOREEND);
     }
   }
 

@@ -36,7 +36,7 @@ export default class MovieController {
 
     const onWatchList = (evt) => {
       evt.preventDefault();
-      const watchlist = document.querySelector(`#watchlist-filter`).querySelector(`.main-navigation__item-count`);
+      const watchlist = document.querySelector(`#filter__watchlist`).querySelector(`.main-navigation__item-count`);
       const watchlistVal = watchlist.innerText;
       if (!card.isInWatchlist) {
         watchlist.innerText = +watchlistVal + 1;
@@ -50,7 +50,7 @@ export default class MovieController {
 
     const onWatched = (evt) => {
       evt.preventDefault();
-      const watched = document.querySelector(`#history-filter`).querySelector(`.main-navigation__item-count`);
+      const watched = document.querySelector(`#filter__history`).querySelector(`.main-navigation__item-count`);
       const watchedVal = watched.innerText;
       if (!card.isWatched) {
         watched.innerText = +watchedVal + 1;
@@ -64,7 +64,7 @@ export default class MovieController {
 
     const onFavorite = (evt) => {
       evt.preventDefault();
-      const favorites = document.querySelector(`#favorites-filter`).querySelector(`.main-navigation__item-count`);
+      const favorites = document.querySelector(`#filter__favorites`).querySelector(`.main-navigation__item-count`);
       const favoritesVal = favorites.innerText;
       if (!card.isFavorite) {
         favorites.innerText = +favoritesVal + 1;

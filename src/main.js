@@ -8,6 +8,8 @@ import {generateCards} from './mock/card.js';
 import {generateFilters, filmsQuantity, getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 import CardsModel from './models/movies.js';
+import FilterController from './controllers/filters.js';
+
 
 const CARD_COUNT = 22;
 
@@ -15,16 +17,21 @@ const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
 render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BEFOREEND);
-const filters = generateFilters();
-render(siteMainElement, new SiteNavigationComponent(filters).getElement(), RenderPosition.BEFOREEND);
+
+// const filters = generateFilters();
+// render(siteMainElement, new SiteNavigationComponent(filters).getElement(), RenderPosition.BEFOREEND);
+
+const cards = generateCards(CARD_COUNT);
+const cardsModel = new CardsModel();
+cardsModel.setCards(cards);
+
+const filterController = new FilterController(siteMainElement, cardsModel);
+filterController.render();
+
 const sorts = new SiteSortComponent();
 render(siteMainElement, sorts.getElement(), RenderPosition.BEFOREEND);
 const cardList = new CardListsComponent();
 render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
-
-const cards = generateCards(CARD_COUNT);
-const cardsModel = new CardsModel();
-cardsModel.setTasks(cards);
 
 const statics = document.querySelector(`.footer__statistics>p`);
 statics.textContent = `${CARD_COUNT} movies inside`;
