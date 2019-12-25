@@ -8,6 +8,7 @@ export default class Cards {
     this._activeFilterType = FilterType.ALL;
 
     this._filterChangeHandlers = [];
+    this._dataChangeHandlers = [];
   }
 
   getCards() {
@@ -40,6 +41,11 @@ export default class Cards {
 
     this._cards = [].concat(this._cards.slice(0, index), card, this._cards.slice(index + 1));
 
+    this._dataChangeHandlers.forEach((handler) => handler());
     return true;
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 }

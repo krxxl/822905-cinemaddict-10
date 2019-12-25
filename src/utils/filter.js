@@ -7,7 +7,6 @@ export const getWatchlistCards = (cards) => {
 };
 
 export const getHistotryCards = (cards) => {
-  console.log(cards.filter((card) => card.isWatched))
   return cards.filter((card) => card.isWatched);
 };
 
