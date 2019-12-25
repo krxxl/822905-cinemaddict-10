@@ -100,6 +100,15 @@ export default class MovieController {
       onFavorite(evt);
     });
 
+    this._popupComponent.setCloseButtonClickHandler((evt, index) => {
+      evt.preventDefault();
+
+      this._onDataChange(this, card, Object.assign({}, card, {
+        countComments: card.countComments - 1,
+        comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
+      }));
+    });
+
     if (oldPopupComponent && oldCardComponent) {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);

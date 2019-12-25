@@ -251,4 +251,13 @@ export default class Popup extends AbstractComponent {
     this.getElement().querySelector(`#favorite`)
       .addEventListener(`change`, handler);
   }
+
+  setCloseButtonClickHandler(handler) {
+    const buttons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    buttons.forEach((button, index) => {
+      button.addEventListener(`click`, (evt) => {
+        handler(evt, index);
+      });
+    });
+  }
 }

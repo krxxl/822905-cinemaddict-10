@@ -50,7 +50,6 @@ export default class Filter extends AbstractComponent {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
       const filterName = getFilterNameById(evt.target.id);
-      console.log(evt.target.id);
       handler(filterName);
     });
   }

@@ -2,10 +2,10 @@
 import PageController from './controllers/page.js';
 import ProfileComponent from './components/profile.js';
 import CardListsComponent from './components/card-list.js';
-import SiteNavigationComponent from './components/menu.js';
+// import SiteNavigationComponent from './components/menu.js';
 import SiteSortComponent from './components/sort.js';
 import {generateCards} from './mock/card.js';
-import {generateFilters, filmsQuantity, getRank} from './mock/filter.js';
+import {filmsQuantity, getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 import CardsModel from './models/movies.js';
 import FilterController from './controllers/filters.js';
