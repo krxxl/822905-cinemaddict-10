@@ -100,8 +100,9 @@ export default class MovieController {
       onFavorite(evt);
     });
 
-    this._popupComponent.setCloseButtonClickHandler((evt, index) => {
+    this._popupComponent.setCloseButtonClickHandler((evt) => {
       evt.preventDefault();
+      const index = +evt.target.dataset.index;
 
       this._onDataChange(this, card, Object.assign({}, card, {
         countComments: card.countComments - 1,

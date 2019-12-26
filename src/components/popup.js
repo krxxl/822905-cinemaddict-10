@@ -7,7 +7,7 @@ const genresTemplate = (genre) => {
   );
 };
 
-const commentTemplate = (comment) => {
+const commentTemplate = (comment, index) => {
   const {emoji, text, author, commentDay} = comment;
   return (
     `<li class="film-details__comment">
@@ -19,7 +19,7 @@ const commentTemplate = (comment) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${formatDateComment(commentDay)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" data-index="${index}" >Delete</button>
       </p>
     </div>
     </li>`
@@ -83,7 +83,7 @@ const ratingTemplate = (card) => {
 const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, countComments, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
-  const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
+  const comment = comments.map((it, index) => commentTemplate(it, index)).join(`\n`);
   let inWatchlist = ``;
   let watched = ``;
   let favorite = ``;
@@ -254,10 +254,8 @@ export default class Popup extends AbstractComponent {
 
   setCloseButtonClickHandler(handler) {
     const buttons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
-    buttons.forEach((button, index) => {
-      button.addEventListener(`click`, (evt) => {
-        handler(evt, index);
-      });
+    buttons.forEach((button) => {
+      button.addEventListener(`click`, handler);
     });
   }
 }
