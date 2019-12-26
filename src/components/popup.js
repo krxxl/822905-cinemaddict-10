@@ -258,4 +258,8 @@ export default class Popup extends AbstractComponent {
       button.addEventListener(`click`, handler);
     });
   }
+
+  setSendCommentHandler(handler) {
+    document.addEventListener(`keydown`, handler);
+  }
 }
