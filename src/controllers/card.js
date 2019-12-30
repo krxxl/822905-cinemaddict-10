@@ -36,13 +36,13 @@ export default class MovieController {
 
     const onWatchList = (evt) => {
       evt.preventDefault();
-      const watchlist = document.querySelector(`#watchlist-filter`).querySelector(`.main-navigation__item-count`);
-      const watchlistVal = watchlist.innerText;
-      if (!card.isInWatchlist) {
-        watchlist.innerText = +watchlistVal + 1;
-      } else {
-        watchlist.innerText = +watchlistVal - 1;
-      }
+      // const watchlist = document.querySelector(`#filter__watchlist`).querySelector(`.main-navigation__item-count`);
+      // const watchlistVal = watchlist.innerText;
+      // if (!card.isInWatchlist) {
+      //   watchlist.innerText = +watchlistVal + 1;
+      // } else {
+      //   watchlist.innerText = +watchlistVal - 1;
+      // }
       this._onDataChange(this, card, Object.assign({}, card, {
         isInWatchlist: !card.isInWatchlist,
       }));
@@ -50,13 +50,13 @@ export default class MovieController {
 
     const onWatched = (evt) => {
       evt.preventDefault();
-      const watched = document.querySelector(`#history-filter`).querySelector(`.main-navigation__item-count`);
-      const watchedVal = watched.innerText;
-      if (!card.isWatched) {
-        watched.innerText = +watchedVal + 1;
-      } else {
-        watched.innerText = +watchedVal - 1;
-      }
+      // const watched = document.querySelector(`#filter__history`).querySelector(`.main-navigation__item-count`);
+      // const watchedVal = watched.innerText;
+      // if (!card.isWatched) {
+      //   watched.innerText = +watchedVal + 1;
+      // } else {
+      //   watched.innerText = +watchedVal - 1;
+      // }
       this._onDataChange(this, card, Object.assign({}, card, {
         isWatched: !card.isWatched,
       }));
@@ -64,13 +64,13 @@ export default class MovieController {
 
     const onFavorite = (evt) => {
       evt.preventDefault();
-      const favorites = document.querySelector(`#favorites-filter`).querySelector(`.main-navigation__item-count`);
-      const favoritesVal = favorites.innerText;
-      if (!card.isFavorite) {
-        favorites.innerText = +favoritesVal + 1;
-      } else {
-        favorites.innerText = +favoritesVal - 1;
-      }
+      // const favorites = document.querySelector(`#filter__favorites`).querySelector(`.main-navigation__item-count`);
+      // const favoritesVal = favorites.innerText;
+      // if (!card.isFavorite) {
+      //   favorites.innerText = +favoritesVal + 1;
+      // } else {
+      //   favorites.innerText = +favoritesVal - 1;
+      // }
       this._onDataChange(this, card, Object.assign({}, card, {
         isFavorite: !card.isFavorite,
       }));
@@ -100,6 +100,45 @@ export default class MovieController {
       onFavorite(evt);
     });
 
+    this._popupComponent.setCloseButtonClickHandler((evt) => {
+      evt.preventDefault();
+      // console.log(evt)
+      if (evt.target.className === `film-details__comment-delete`) {
+        const index = +evt.target.dataset.index;
+
+        this._onDataChange(this, card, Object.assign({}, card, {
+          countComments: card.countComments - 1,
+          comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
+        }));
+      }
+
+    });
+
+    this._popupComponent.setSendCommentHandler((evt) => {
+      if (evt.keyCode === 13 && evt.ctrlKey) {
+        const commentText = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
+        const dateComment = new Date();
+        let emojiUrl = ``;
+        const emojies = this._popupComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
+        emojies.forEach((emoji) => {
+          if (emoji.checked) {
+            emojiUrl = emoji.nextElementSibling.querySelector(`img`).src;
+          }
+        });
+
+        const comment = {
+          emoji: emojiUrl,
+          text: commentText,
+          author: `somebody`,
+          commentDay: dateComment,
+        };
+        this._onDataChange(this, card, Object.assign({}, card, {
+          countComments: card.countComments + 1,
+          comments: [].concat(comment, card.comments.slice(0)),
+        }));
+      }
+    });
+
     if (oldPopupComponent && oldCardComponent) {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);
@@ -124,6 +163,7 @@ export default class MovieController {
     this._mode = Mode.POPUP;
     document.addEventListener(`keydown`, (evt) => {
       this._onEscKeyDown(evt);
+      // this._onCtrlEnterDown(evt);
     });
   }
 
@@ -140,4 +180,15 @@ export default class MovieController {
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
+
+  // _onCtrlEnterDown(evt) {
+  //   if (evt.keyCode === 13 && evt.ctrlKey) {
+  //     const comment = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
+
+  //     this._onDataChange(this, card, Object.assign({}, card, {
+  //       countComments: card.countComments + 1,
+  //       comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
+  //     }));
+  //   }
+  // }
 }

@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {MonthNames} from '../const.js';
+import {formatDateWithMonths, formatDateComment} from '../utils/common.js';
 
 const genresTemplate = (genre) => {
   return (
@@ -7,19 +7,23 @@ const genresTemplate = (genre) => {
   );
 };
 
-const commentTemplate = (comment) => {
-  const {emoji, text, author, commentDay} = comment;
+const commentTemplate = (comment, index) => {
+  let {emoji, text, author, commentDay} = comment;
+  if (text.length > 140) {
+    text = text.slice(0, 139) + `...`;
+  }
+  const description = window.he.encode(text);
   return (
     `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
       <img src=${emoji} width="55" height="55" alt="emoji">
     </span>
     <div>
-      <p class="film-details__comment-text">${text}</p>
+      <p class="film-details__comment-text">${description}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${commentDay}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <span class="film-details__comment-day">${formatDateComment(commentDay)}</span>
+        <button class="film-details__comment-delete" data-index="${index}" >Delete</button>
       </p>
     </div>
     </li>`
@@ -83,8 +87,7 @@ const ratingTemplate = (card) => {
 const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, countComments, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, comments} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
-  const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
-  const fullDate = `${date.getDate()} ${MonthNames[date.getMonth()]} ${date.getFullYear()}`;
+  const comment = comments.map((it, index) => commentTemplate(it, index)).join(`\n`);
   let inWatchlist = ``;
   let watched = ``;
   let favorite = ``;
@@ -144,7 +147,7 @@ const createPopupTemplate = (card) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${fullDate}</td>
+                <td class="film-details__cell">${formatDateWithMonths(date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -251,5 +254,15 @@ export default class Popup extends AbstractComponent {
   setFavoriteButtonClickHandler(handler) {
     this.getElement().querySelector(`#favorite`)
       .addEventListener(`change`, handler);
+  }
+
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__comments-list`)
+      .addEventListener(`click`, handler);
+  }
+
+  setSendCommentHandler(handler) {
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, handler);
   }
 }

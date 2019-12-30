@@ -1,4 +1,5 @@
 import AbstractComponent from './abstract-component.js';
+import {formatDateYearOnly} from '../utils/common.js';
 // import AbstractSmartComponent from './abstract-smart-component.js';
 
 const createCardTemplate = (card) => {
@@ -20,7 +21,7 @@ const createCardTemplate = (card) => {
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${date.getFullYear()}</span>
+      <span class="film-card__year">${formatDateYearOnly(date)}</span>
       <span class="film-card__duration">${duration}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>

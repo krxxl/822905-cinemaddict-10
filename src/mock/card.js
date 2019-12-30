@@ -124,7 +124,8 @@ const generateComment = () => {
     emoji: `${emojiUrl}${getRandomArrayItem(emojiSrc)}`,
     text: generateString(getRandomIntegerNumber(1, 3), strArray),
     author: getRandomArrayItem(directorNames),
-    commentDay: `2019/12/31 23:59`,
+    // commentDay: `2019/12/31 23:59`,
+    commentDay: getRandomDate(new Date(2017, 0, 1), new Date()),
   };
 };
 
@@ -163,6 +164,7 @@ const generateCard = () => {
     actors: generateString(getRandomIntegerNumber(1, 3), directorNames),
     country: getRandomArrayItem(countryNames),
     comments: generateComments(countComment),
+    id: Date.now(),
   };
 };
 
