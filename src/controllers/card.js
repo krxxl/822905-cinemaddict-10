@@ -102,25 +102,36 @@ export default class MovieController {
 
     this._popupComponent.setCloseButtonClickHandler((evt) => {
       evt.preventDefault();
-      const index = +evt.target.dataset.index;
-      console.log([].concat(card.comments.slice(0, index), card.comments.slice(index + 1)));
-      this._onDataChange(this, card, Object.assign({}, card, {
-        countComments: card.countComments - 1,
-        comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
-      }));
+      // console.log(evt)
+      if (evt.target.className === `film-details__comment-delete`) {
+        const index = +evt.target.dataset.index;
+
+        this._onDataChange(this, card, Object.assign({}, card, {
+          countComments: card.countComments - 1,
+          comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
+        }));
+      }
+
     });
 
     this._popupComponent.setSendCommentHandler((evt) => {
       if (evt.keyCode === 13 && evt.ctrlKey) {
         const commentText = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
         const dateComment = new Date();
-        const emoji = 'images/emoji/smile.png'
+        let emojiUrl = ``;
+        const emojies = this._popupComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
+        emojies.forEach((emoji) => {
+          if (emoji.checked) {
+            emojiUrl = emoji.nextElementSibling.querySelector(`img`).src;
+          }
+        });
+
         const comment = {
-          emoji: emoji,
+          emoji: emojiUrl,
           text: commentText,
-          author: 'somebody',
+          author: `somebody`,
           commentDay: dateComment,
-        }
+        };
         this._onDataChange(this, card, Object.assign({}, card, {
           countComments: card.countComments + 1,
           comments: [].concat(comment, card.comments.slice(0)),
