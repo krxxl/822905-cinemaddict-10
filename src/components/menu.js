@@ -7,20 +7,11 @@ const getFilterNameById = (id) => {
 };
 
 const filterTemplate = (filter) => {
-  // const {name, count, shortname} = filter;
 
-  // if (name === `Stats`) {
-  //   return `<a href="#${shortname}" class="main-navigation__item main-navigation__item--additional">${name}</a>`;
-  // } else {
-  //   return `<a href="#${shortname}" id="filter__${shortname}" class="main-navigation__item main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
-  // }
   const {name, count} = filter;
 
-  if (name === `Stats`) {
-    return `<a href="#${name}" class="main-navigation__item main-navigation__item--additional">${name}</a>`;
-  } else {
-    return `<a href="#${name}" id="filter__${name}" class="main-navigation__item main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
-  }
+  return `<a href="#${name}" id="filter__${name}" class="main-navigation__item main-navigation__item">${name}<span class="main-navigation__item-count">${count}</span></a>`;
+
 };
 
 const createSiteNavigationTemplate = (filters) => {
