@@ -14,7 +14,7 @@ const createArray = (cards, dateFrom, dateTo) => {
 
   const watchedCards = cards;
 
-  return watchedCards.filter((card) => {
+  return watchedCards.slice().filter((card) => {
     const watched = card.dateWatched;
     return watched >= dateFrom && watched <= dateTo;
   });
@@ -196,6 +196,7 @@ export default class Statistics extends AbstractSmartComponent {
     super();
 
     this._cards = cards.getCards();
+    this._chartsCards = cards.getCards();
 
     this._genresCtx = null;
 
@@ -232,7 +233,6 @@ export default class Statistics extends AbstractSmartComponent {
   }
 
   rerender(cards) {
-
     this._cards = cards;
 
     super.rerender();
@@ -244,7 +244,7 @@ export default class Statistics extends AbstractSmartComponent {
     return createStatisticsTemplate(this._cards);
   }
 
-  getArray(filter) {
+  getArray(filter, array) {
     let newArray = [];
     const dateTo = new Date();
     let dateFrom = null;
@@ -259,7 +259,7 @@ export default class Statistics extends AbstractSmartComponent {
           return d;
         })();
 
-        newArray = createArray(this._cards, dateFrom, dateTo);
+        newArray = createArray(array, dateFrom, dateTo);
 
         break;
       case `statistic-week`:
@@ -268,7 +268,7 @@ export default class Statistics extends AbstractSmartComponent {
           d.setDate(d.getDate() - 7);
           return d;
         })();
-        newArray = createArray(this._cards, dateFrom, dateTo);
+        newArray = createArray(array, dateFrom, dateTo);
         break;
       case `statistic-month`:
         dateFrom = (() => {
@@ -276,7 +276,7 @@ export default class Statistics extends AbstractSmartComponent {
           d.setDate(d.getMonth() - 1);
           return d;
         })();
-        newArray = createArray(this._cards, dateFrom, dateTo);
+        newArray = createArray(array, dateFrom, dateTo);
         break;
       case `statistic-year`:
         dateFrom = (() => {
@@ -284,7 +284,7 @@ export default class Statistics extends AbstractSmartComponent {
           d.setDate(d.getFullYear() - 1);
           return d;
         })();
-        newArray = createArray(this._cards, dateFrom, dateTo);
+        newArray = createArray(array, dateFrom, dateTo);
         break;
     }
 
@@ -296,7 +296,7 @@ export default class Statistics extends AbstractSmartComponent {
       evt.preventDefault();
       const filterName = evt.target.id;
       console.log(`dsfh`)
-      this.rerender(this.getArray(filterName));
+      this.rerender(this.getArray(filterName, this._chartsCards));
     });
   }
 }
