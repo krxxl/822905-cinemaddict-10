@@ -1,6 +1,8 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {getRank} from '../mock/filter.js';
+import {duration} from 'moment';
 
 const getUniqItems = (item, index, array) => {
   return array.indexOf(item) === index;
@@ -19,6 +21,7 @@ const createArray = (cards, dateFrom, dateTo) => {
     return watched >= dateFrom && watched <= dateTo;
   });
 };
+
 
 const renderGenresChart = (tagsCtx, cards) => {
   const genresLabels = cards.map((card) => card.genres)
@@ -140,13 +143,16 @@ const renderGenresChart = (tagsCtx, cards) => {
   });
 };
 
-const createStatisticsTemplate = ({cards, dateFrom, dateTo}) => {
+const createStatisticsTemplate = (allcards, cards) => {
+  const rank = getRank(allcards.length);
+  const watchedFilmCount = cards.length;
+
   return (
     `<section class="statistic">
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        <span class="statistic__rank-label">${rank}</span>
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -171,7 +177,7 @@ const createStatisticsTemplate = ({cards, dateFrom, dateTo}) => {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${watchedFilmCount} <span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
@@ -192,13 +198,14 @@ const createStatisticsTemplate = ({cards, dateFrom, dateTo}) => {
 };
 
 export default class Statistics extends AbstractSmartComponent {
-  constructor({cards}) {
+  constructor(cards) {
     super();
 
-    this._cards = cards.getCards();
-    this._chartsCards = cards.getCards();
+    this._cards = cards;
+    this._allCards = cards;
 
     this._genresCtx = null;
+    this._filterName = `statistic-all-time`;
 
 
     this._renderCharts();
@@ -238,10 +245,12 @@ export default class Statistics extends AbstractSmartComponent {
     super.rerender();
 
     this._renderCharts();
+
+    this.getElement().querySelector(`#${this._filterName}`).checked = true;
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._cards);
+    return createStatisticsTemplate(this._allCards, this._cards);
   }
 
   getArray(filter, array) {
@@ -250,7 +259,7 @@ export default class Statistics extends AbstractSmartComponent {
     let dateFrom = null;
     switch (filter) {
       case `statistic-all-time`:
-        console.log(`statistic-all-time`);
+        newArray = array;
         break;
       case `statistic-today`:
         dateFrom = (() => {
@@ -281,7 +290,7 @@ export default class Statistics extends AbstractSmartComponent {
       case `statistic-year`:
         dateFrom = (() => {
           const d = new Date(dateTo);
-          d.setDate(d.getFullYear() - 1);
+          d.setDate(d.getDate() - 364);
           return d;
         })();
         newArray = createArray(array, dateFrom, dateTo);
@@ -294,9 +303,9 @@ export default class Statistics extends AbstractSmartComponent {
   setPeriodChangeHandler() {
     this.getElement().addEventListener(`change`, (evt) => {
       evt.preventDefault();
-      const filterName = evt.target.id;
-      console.log(`dsfh`)
-      this.rerender(this.getArray(filterName, this._chartsCards));
+      this._filterName = evt.target.id;
+
+      this.rerender(this.getArray(this._filterName, this._allCards), this._filterName);
     });
   }
 }

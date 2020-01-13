@@ -6,7 +6,7 @@ import StatisticsComponent from './components/statistics.js';
 import StatsMenuComponent from './components/stats-menu.js';
 import SiteSortComponent from './components/sort.js';
 import {generateCards} from './mock/card.js';
-import {filmsQuantity, getRank} from './mock/filter.js';
+import {getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 import CardsModel from './models/movies.js';
 import FilterController from './controllers/filters.js';
@@ -30,6 +30,9 @@ const cards = generateCards(CARD_COUNT);
 const cardsModel = new CardsModel();
 cardsModel.setCards(cards);
 
+const watchedCards = cards.filter((card) => card.isWatched);
+const watchedCardsCount = watchedCards.length;
+
 // const dateTo = new Date();
 // const dateFrom = (() => {
 //   const d = new Date(dateTo);
@@ -37,7 +40,7 @@ cardsModel.setCards(cards);
 //   return d;
 // })();
 
-const statisticsComponent = new StatisticsComponent({cards: cardsModel});
+const statisticsComponent = new StatisticsComponent(watchedCards);
 
 
 
@@ -60,7 +63,7 @@ const statics = document.querySelector(`.footer__statistics>p`);
 statics.textContent = `${CARD_COUNT} movies inside`;
 
 const rank = document.querySelector(`.profile__rating`);
-rank.textContent = `${getRank(filmsQuantity)}`;
+rank.textContent = `${getRank(watchedCardsCount)}`;
 
 const pageController = new PageController(cardList, sorts, cardsModel);
 
