@@ -20,13 +20,26 @@ const siteMainElement = document.querySelector(`.main`);
 
 render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BEFOREEND);
 
-const statisticsComponent = new StatisticsComponent();
+
+
+// const statisticsComponent = new StatisticsComponent();
 // const filters = generateFilters();
 // render(siteMainElement, new SiteNavigationComponent(filters).getElement(), RenderPosition.BEFOREEND);
 
 const cards = generateCards(CARD_COUNT);
 const cardsModel = new CardsModel();
 cardsModel.setCards(cards);
+
+// const dateTo = new Date();
+// const dateFrom = (() => {
+//   const d = new Date(dateTo);
+//   d.setDate(d.getDate() - 7);
+//   return d;
+// })();
+
+const statisticsComponent = new StatisticsComponent({cards: cardsModel});
+
+
 
 const filterController = new FilterController(siteMainElement, cardsModel);
 filterController.render();
@@ -53,6 +66,9 @@ const pageController = new PageController(cardList, sorts, cardsModel);
 
 statisticsComponent.hide();
 pageController.render();
+
+statisticsComponent.setPeriodChangeHandler(() => {
+});
 
 statsMenu.setStatsChangeHandler((state) => {
   switch (state) {

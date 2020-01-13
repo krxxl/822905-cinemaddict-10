@@ -59,6 +59,7 @@ export default class MovieController {
       // }
       this._onDataChange(this, card, Object.assign({}, card, {
         isWatched: !card.isWatched,
+        watchedDate: new Date()
       }));
     };
 

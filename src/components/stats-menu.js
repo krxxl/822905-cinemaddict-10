@@ -1,6 +1,6 @@
 import AbstractComponent from './abstract-component.js';
 
-const activeClass = `active`;
+const activeClass = `main-navigation__item--active`;
 
 const createStatsNavigationTemplate = () => {
   return (
