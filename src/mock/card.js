@@ -83,20 +83,6 @@ const getRandomFloatNumber = (min, max) => {
   return (min + max * Math.random()).toFixed(1);
 };
 
-const getDuration = () => {
-  let randomTime = getRandomIntegerNumber(0, 180);
-  let hours = randomTime / 60 ^ 0;
-  if (hours) {
-    let min = randomTime % 60;
-    if (min < 10) {
-      min = `0 ${min}`;
-    }
-    randomTime = `${hours}h ${min}m`;
-  } else {
-    randomTime = `${randomTime}m`;
-  }
-  return randomTime;
-};
 
 const getCountComments = () => {
   return getRandomIntegerNumber(0, 10);
@@ -167,7 +153,7 @@ const generateCard = () => {
     poster: `${picUrl}${getRandomArrayItem(posterSrc)}`,
     rating: getRandomFloatNumber(0, 10),
     date: randomDate,
-    duration: getDuration(),
+    duration: getRandomIntegerNumber(25, 180),
     genres: getGenres(getRandomIntegerNumber(1, 3)),
     countComments: countComment,
     description: generateString(getRandomIntegerNumber(1, 3), strArray),

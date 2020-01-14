@@ -2,7 +2,7 @@ import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getRank} from '../mock/filter.js';
-import {duration} from 'moment';
+// import {duration} from 'moment';
 
 const getUniqItems = (item, index, array) => {
   return array.indexOf(item) === index;
@@ -13,23 +13,110 @@ const createColor = () => {
 };
 
 const createArray = (cards, dateFrom, dateTo) => {
-
   const watchedCards = cards;
-
   return watchedCards.slice().filter((card) => {
     const watched = card.dateWatched;
     return watched >= dateFrom && watched <= dateTo;
   });
 };
 
+const getGenresLabels = (cards) => {
+  return cards.map((card) => card.genres)
+  .reduce((acc, genres) => {
+    return acc.concat(Array.from(genres));
+  }, [])
+  .filter(getUniqItems);
+};
+
+const getGenresData = (genresLabels, cards) => {
+  return genresLabels.map((genre) => cards.reduce((acc, card) => {
+    const targetCardsCount = Array.from(card.genres)
+      .filter((it) => it === genre).length;
+
+    return acc + targetCardsCount;
+  }, 0));
+};
+
+const sortArrays = (arrayLabel, arrayData) => {
+
+  const arrayOfObj = arrayLabel.map((d, i) => {
+    return {
+      label: d,
+      data: arrayData[i] || 0
+    };
+  });
+
+  const sortedArrayOfObj = arrayOfObj.sort((a, b) => {
+    return b.data - a.data;
+  });
+
+
+  let genresLabels = [];
+  let sortedGenres = [];
+  sortedArrayOfObj.forEach((d) => {
+    genresLabels.push(d.label);
+    sortedGenres.push(d.data);
+  });
+
+  return {genresLabels, sortedGenres};
+};
+
+const getArrays = (cards) => {
+  const genresLabels = getGenresLabels(cards);
+  const genresData = getGenresData(genresLabels, cards);
+
+  return sortArrays(genresLabels, genresData);
+};
+
+const totalDuration = (cards) => {
+  let sumDuration;
+  cards.forEach((card) => {
+    sumDuration = card.duration;
+  });
+  let hours = sumDuration / 60 ^ 0;
+  let min;
+  if (hours) {
+    min = sumDuration % 60;
+    if (min < 10) {
+      min = `0 ${min}`;
+    }
+  }
+
+  return {hours, min};
+};
+
+const getMostWatcheble = (cards) => {
+
+  const {genresLabels, sortedGenres} = getArrays(cards);
+  // console.log(genresLabels)
+  // console.log(sortedGenres)
+
+  // const genresLabels = cards.map((card) => card.genres)
+  //   .reduce((acc, genres) => {
+  //     return acc.concat(Array.from(genres));
+  //   }, [])
+  //   .filter(getUniqItems);
+
+  // const sortedGenres = genresLabels.map((genre) => cards.reduce((acc, card) => {
+  //   const targetCardsCount = Array.from(card.genres)
+  //     .filter((it) => it === genre).length;
+
+  //   return acc + targetCardsCount;
+  // }, 0));
+
+  const maxIndex = sortedGenres.indexOf(Math.max.apply(null, sortedGenres));
+
+  return genresLabels[maxIndex];
+
+};
 
 const renderGenresChart = (tagsCtx, cards) => {
-  const genresLabels = cards.map((card) => card.genres)
-    .reduce((acc, genres) => {
-      return acc.concat(Array.from(genres));
-    }, [])
-    .filter(getUniqItems);
-
+  // const genresLabels = cards.map((card) => card.genres)
+  //   .reduce((acc, genres) => {
+  //     return acc.concat(Array.from(genres));
+  //   }, [])
+  //   .filter(getUniqItems);
+  const {genresLabels, sortedGenres} = getArrays(cards);
 
   return new Chart(tagsCtx, {
     plugins: [ChartDataLabels],
@@ -37,12 +124,7 @@ const renderGenresChart = (tagsCtx, cards) => {
     data: {
       labels: genresLabels,
       datasets: [{
-        data: genresLabels.map((genre) => cards.reduce((acc, card) => {
-          const targetCardsCount = Array.from(card.genres)
-            .filter((it) => it === genre).length;
-
-          return acc + targetCardsCount;
-        }, 0)).slice().sort((a, b) => b - a),
+        data: sortedGenres,
         backgroundColor: genresLabels.map(createColor),
         barThickness: 20,
         minBarLength: 0,
@@ -52,7 +134,7 @@ const renderGenresChart = (tagsCtx, cards) => {
       scales: {
         xAxes: [{
           gridLines: {
-            display: true,
+            display: false,
 
           },
           ticks: {
@@ -66,7 +148,10 @@ const renderGenresChart = (tagsCtx, cards) => {
             drawBorder: false
           },
           ticks: {
-            display: true
+            padding: 40,
+            fontColor: `#FFFFFF`,
+            fontSize: 14,
+            display: true,
           }
         }]
       },
@@ -74,78 +159,48 @@ const renderGenresChart = (tagsCtx, cards) => {
         datalabels: {
           display: true,
           anchor: `start`,
-          color: 'white',
+          align: `left`,
+          color: `white`,
           labels: {
             title: {
               font: {
-                weight: 'bold',
-                size: 20,
+                size: 14,
               }
             },
-            // value: {
-            //   color: 'green'
-            // }
+
           }
         }
       },
-      // tooltips: {
-      //   callbacks: {
-      //     label: (tooltipItem, data) => {
-      //       const allData = data.datasets[tooltipItem.datasetIndex].data;
-      //       const tooltipData = allData[tooltipItem.index];
 
-      //       const total = allData.reduce((acc, it) => acc + parseFloat(it));
-      //       const tooltipPercentage = Math.round((tooltipData / total) * 100);
-
-      //       return `${tooltipData} TASKS — ${tooltipPercentage}%`;
-      //     }
-      //   },
-      //   displayColors: false,
-      //   backgroundColor: `#ffffff`,
-      //   bodyFontColor: `#000000`,
-      //   borderColor: `#000000`,
-      //   borderWidth: 1,
-      //   cornerRadius: 0,
-      //   xPadding: 15,
-      //   yPadding: 15
-      // },
-      // title: {
-      //   display: true,
-      //   text: `Custom Chart Title`,
-      // },
       legend: {
         display: false,
-        // position: `left`,
-        // labels: {
-        // //   boxWidth: 15,
-        // //   padding: 25,
-        // //   fontStyle: 500,
-        // //   fontColor: `#000000`,
-        // //   fontSize: 13
-        // // }
-        // generateLabels: function(chart) {
-        //   var labels = chart.data.labels;
-        //   var dataset = chart.data.datasets[0];
-        //   var legend = labels.map(function(label, index) {
-        //   return {
-        //   datasetIndex: 0,
-        //   fillStyle: dataset.backgroundColor && dataset.backgroundColor[index],
-        //   strokeStyle: dataset.borderColor && dataset.borderColor[index],
-        //   lineWidth: dataset.borderWidth,
-        //   text: label
-        //   }
-        //   });
-        //   return legend;
-        //   }
-        // }
-      }
+      },
     }
   });
 };
 
 const createStatisticsTemplate = (allcards, cards) => {
   const rank = getRank(allcards.length);
-  const watchedFilmCount = cards.length;
+  let watchedFilmCount = cards.length;
+  let {hours, min} = totalDuration(cards);
+  let mostWatcheble = getMostWatcheble(cards);
+
+
+  if (!watchedFilmCount) {
+    watchedFilmCount = 0;
+  }
+
+  if (!hours) {
+    hours = 0;
+  }
+
+  if (!min) {
+    min = 0;
+  }
+
+  if (!mostWatcheble) {
+    mostWatcheble = `-`;
+  }
 
   return (
     `<section class="statistic">
@@ -181,11 +236,11 @@ const createStatisticsTemplate = (allcards, cards) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+          <p class="statistic__item-text">${hours} <span class="statistic__item-description">h</span> ${min} <span class="statistic__item-description">m</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${mostWatcheble}</p>
         </li>
       </ul>
 

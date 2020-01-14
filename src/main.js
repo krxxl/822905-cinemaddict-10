@@ -12,14 +12,12 @@ import CardsModel from './models/movies.js';
 import FilterController from './controllers/filters.js';
 
 
-
 const CARD_COUNT = 22;
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 
 render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BEFOREEND);
-
 
 
 // const statisticsComponent = new StatisticsComponent();
@@ -41,7 +39,6 @@ const watchedCardsCount = watchedCards.length;
 // })();
 
 const statisticsComponent = new StatisticsComponent(watchedCards);
-
 
 
 const filterController = new FilterController(siteMainElement, cardsModel);
