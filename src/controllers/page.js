@@ -46,6 +46,14 @@ export default class PageController {
     this._cardsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
+
   render() {
 
     // this._cards = cards;

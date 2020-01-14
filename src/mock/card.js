@@ -83,20 +83,6 @@ const getRandomFloatNumber = (min, max) => {
   return (min + max * Math.random()).toFixed(1);
 };
 
-const getDuration = () => {
-  let randomTime = getRandomIntegerNumber(0, 180);
-  let hours = randomTime / 60 ^ 0;
-  if (hours) {
-    let min = randomTime % 60;
-    if (min < 10) {
-      min = `0 ${min}`;
-    }
-    randomTime = `${hours}h ${min}m`;
-  } else {
-    randomTime = `${randomTime}m`;
-  }
-  return randomTime;
-};
 
 const getCountComments = () => {
   return getRandomIntegerNumber(0, 10);
@@ -142,21 +128,37 @@ const getRandomDate = (start, end) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
+const createWatchedDate = () => {
+  const dateTo = new Date();
+  const dateFrom = (() => {
+    const d = new Date(dateTo);
+    d.setDate(d.getDate() - 5);
+    return d;
+  })();
+  return getRandomDate(dateFrom, dateTo);
+};
+
 const generateCard = () => {
   let countComment = getCountComments();
   const randomDate = getRandomDate(new Date(1989, 0, 1), new Date());
+  let dateWatched = null;
+  const isWatched = Math.random() > 0.5;
+  if (isWatched) {
+    dateWatched = createWatchedDate();
+  }
+
 
   return {
     title: getRandomArrayItem(filmNames),
     poster: `${picUrl}${getRandomArrayItem(posterSrc)}`,
     rating: getRandomFloatNumber(0, 10),
     date: randomDate,
-    duration: getDuration(),
+    duration: getRandomIntegerNumber(25, 180),
     genres: getGenres(getRandomIntegerNumber(1, 3)),
     countComments: countComment,
     description: generateString(getRandomIntegerNumber(1, 3), strArray),
     isInWatchlist: Math.random() > 0.5,
-    isWatched: Math.random() > 0.5,
+    isWatched,
     isFavorite: Math.random() > 0.5,
     age: `${getRandomIntegerNumber(0, 99)}+`,
     director: getRandomArrayItem(directorNames),
@@ -165,6 +167,7 @@ const generateCard = () => {
     country: getRandomArrayItem(countryNames),
     comments: generateComments(countComment),
     id: Date.now(),
+    dateWatched,
   };
 };
 
