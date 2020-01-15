@@ -75,10 +75,12 @@ statsMenu.setStatsChangeHandler((state) => {
     case `no-active`:
       statisticsComponent.hide();
       pageController.show();
+      sorts.show();
       break;
     case `active`:
       statisticsComponent.show();
       pageController.hide();
+      sorts.hide();
       break;
   }
 });

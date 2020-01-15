@@ -13,8 +13,7 @@ const createColor = () => {
 };
 
 const createArray = (cards, dateFrom, dateTo) => {
-  const watchedCards = cards;
-  return watchedCards.slice().filter((card) => {
+  return cards.slice().filter((card) => {
     const watched = card.dateWatched;
     return watched >= dateFrom && watched <= dateTo;
   });
@@ -71,7 +70,7 @@ const getArrays = (cards) => {
 const totalDuration = (cards) => {
   let sumDuration;
   cards.forEach((card) => {
-    sumDuration = card.duration;
+    sumDuration += card.duration;
   });
   let hours = sumDuration / 60 ^ 0;
   let min;
@@ -85,7 +84,7 @@ const totalDuration = (cards) => {
   return {hours, min};
 };
 
-const getMostWatcheble = (cards) => {
+const getMostWatchable = (cards) => {
 
   const {genresLabels, sortedGenres} = getArrays(cards);
   // console.log(genresLabels)
@@ -127,7 +126,6 @@ const renderGenresChart = (tagsCtx, cards) => {
         data: sortedGenres,
         backgroundColor: genresLabels.map(createColor),
         barThickness: 20,
-        minBarLength: 0,
       }]
     },
     options: {
@@ -183,7 +181,7 @@ const createStatisticsTemplate = (allcards, cards) => {
   const rank = getRank(allcards.length);
   let watchedFilmCount = cards.length;
   let {hours, min} = totalDuration(cards);
-  let mostWatcheble = getMostWatcheble(cards);
+  let mostWatcheble = getMostWatchable(cards);
 
 
   if (!watchedFilmCount) {
@@ -245,7 +243,7 @@ const createStatisticsTemplate = (allcards, cards) => {
       </ul>
 
       <div class="statistic__chart-wrap">
-        <canvas class="statistic__chart" width="1000"></canvas>
+        <canvas class="statistic__chart" width="1000" height="300"></canvas>
       </div>
 
   </section>`
@@ -360,7 +358,7 @@ export default class Statistics extends AbstractSmartComponent {
       evt.preventDefault();
       this._filterName = evt.target.id;
 
-      this.rerender(this.getArray(this._filterName, this._allCards), this._filterName);
+      this.rerender(this.getArray(this._filterName, this._allCards));
     });
   }
 }
