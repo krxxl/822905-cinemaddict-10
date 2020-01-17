@@ -21,8 +21,6 @@ const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const api = new API(END_POINT, AUTHORIZATION);
 
-render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BEFOREEND);
-
 
 // const statisticsComponent = new StatisticsComponent();
 // const filters = generateFilters();
@@ -30,10 +28,15 @@ render(siteHeaderElement, new ProfileComponent().getElement(), RenderPosition.BE
 
 // const cards = generateCards(CARD_COUNT);
 const cardsModel = new CardsModel();
+const filterController = new FilterController(siteMainElement, cardsModel);
+const cardList = new CardListsComponent();
+const statsMenu = new StatsMenuComponent();
+const sorts = new SiteSortComponent();
+const pageController = new PageController(cardList, sorts, cardsModel);
+const profileComponent = new ProfileComponent(cardsModel);
+
 // cardsModel.setCards(cards);
 
-// const watchedCards = cards.filter((card) => card.isWatched);
-// const watchedCardsCount = watchedCards.length;
 
 // const dateTo = new Date();
 // const dateFrom = (() => {
@@ -45,19 +48,8 @@ const cardsModel = new CardsModel();
 // const statisticsComponent = new StatisticsComponent(cardsModel);
 
 
-const filterController = new FilterController(siteMainElement, cardsModel);
-filterController.render();
 
 
-const mainNav = siteMainElement.querySelector(`.main-navigation`);
-const statsMenu = new StatsMenuComponent();
-render(mainNav, statsMenu.getElement(), RenderPosition.BEFOREEND);
-
-
-const sorts = new SiteSortComponent();
-render(siteMainElement, sorts.getElement(), RenderPosition.BEFOREEND);
-const cardList = new CardListsComponent();
-render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
 // render(siteMainElement, statisticsComponent.getElement(), RenderPosition.BEFOREEND);
 
 // const statics = document.querySelector(`.footer__statistics>p`);
@@ -66,7 +58,6 @@ render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
 // const rank = document.querySelector(`.profile__rating`);
 // rank.textContent = `${getRank(watchedCardsCount)}`;
 
-const pageController = new PageController(cardList, sorts, cardsModel);
 
 // statisticsComponent.hide();
 // pageController.render();
@@ -89,6 +80,17 @@ statsMenu.setStatsChangeHandler((state) => {
 
 api.getCards()
   .then((cards) => {
+    console.log(cards)
     cardsModel.setCards(cards);
     pageController.render();
+    filterController.render();
+
+    render(siteHeaderElement, profileComponent.getElement(), RenderPosition.BEFOREEND);
+    const mainNav = siteMainElement.querySelector(`.main-navigation`);
+
+    render(mainNav, statsMenu.getElement(), RenderPosition.BEFOREEND);
+
+    render(siteMainElement, sorts.getElement(), RenderPosition.BEFOREEND);
+
+    render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
   });

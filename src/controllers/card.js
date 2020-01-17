@@ -174,11 +174,12 @@ export default class MovieController {
     render(siteFooterElement, this._popupComponent.getElement(), RenderPosition.AFTERBEGIN);
     api.getComments(id).then((comments) => {
       this._commentsComponent = new CommentsComponent(comments);
+      render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
       // console.log(this._commentsComponent);
     });
     // console.log(this._commentsComponent.getElement())
 
-    render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND)
+
     this._mode = Mode.POPUP;
     document.addEventListener(`keydown`, (evt) => {
       this._onEscKeyDown(evt);

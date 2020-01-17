@@ -16,7 +16,6 @@ export const getFavoriteCards = (cards) => {
 
 
 export const getCardsByFilter = (cards, filterType) => {
-
   switch (filterType) {
     case FilterType.ALL:
       return cards;
