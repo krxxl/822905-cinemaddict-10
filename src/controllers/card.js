@@ -1,6 +1,14 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
+import CommentsComponent from '../components/comments.js';
+import API from '../api.js';
+
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
+
+
+const AUTHORIZATION = `Basic KJgykjbsdajfjasd=`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
+const api = new API(END_POINT, AUTHORIZATION);
 
 const Mode = {
   DEFAULT: `default`,
@@ -15,6 +23,7 @@ export default class MovieController {
 
     this._cardComponent = null;
     this._popupComponent = null;
+    this._commentsComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -22,12 +31,13 @@ export default class MovieController {
   render(card) {
     const oldCardComponent = this._cardComponent;
     const oldPopupComponent = this._popupComponent;
-
+    // console.log(this._commentsComponent.getElement())
     this._cardComponent = new CardComponent(card);
     this._popupComponent = new PopupComponent(card);
 
+
     this._cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
-      this._openPopup();
+      this._openPopup(card);
     });
 
     this._popupComponent.setClosePopupHandler(() => {
@@ -101,44 +111,44 @@ export default class MovieController {
       onFavorite(evt);
     });
 
-    this._popupComponent.setCloseButtonClickHandler((evt) => {
-      evt.preventDefault();
-      // console.log(evt)
-      if (evt.target.className === `film-details__comment-delete`) {
-        const index = +evt.target.dataset.index;
+    // this._popupComponent.setCloseButtonClickHandler((evt) => {
+    //   evt.preventDefault();
+    //   // console.log(evt)
+    //   if (evt.target.className === `film-details__comment-delete`) {
+    //     const index = +evt.target.dataset.index;
 
-        this._onDataChange(this, card, Object.assign({}, card, {
-          countComments: card.countComments - 1,
-          comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
-        }));
-      }
+    //     this._onDataChange(this, card, Object.assign({}, card, {
+    //       countComments: card.countComments - 1,
+    //       comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
+    //     }));
+    //   }
 
-    });
+    // });
 
-    this._popupComponent.setSendCommentHandler((evt) => {
-      if (evt.keyCode === 13 && evt.ctrlKey) {
-        const commentText = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
-        const dateComment = new Date();
-        let emojiUrl = ``;
-        const emojies = this._popupComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
-        emojies.forEach((emoji) => {
-          if (emoji.checked) {
-            emojiUrl = emoji.nextElementSibling.querySelector(`img`).src;
-          }
-        });
+    // this._popupComponent.setSendCommentHandler((evt) => {
+    //   if (evt.keyCode === 13 && evt.ctrlKey) {
+    //     const commentText = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
+    //     const dateComment = new Date();
+    //     let emojiUrl = ``;
+    //     const emojies = this._popupComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
+    //     emojies.forEach((emoji) => {
+    //       if (emoji.checked) {
+    //         emojiUrl = emoji.nextElementSibling.querySelector(`img`).src;
+    //       }
+    //     });
 
-        const comment = {
-          emoji: emojiUrl,
-          text: commentText,
-          author: `somebody`,
-          commentDay: dateComment,
-        };
-        this._onDataChange(this, card, Object.assign({}, card, {
-          countComments: card.countComments + 1,
-          comments: [].concat(comment, card.comments.slice(0)),
-        }));
-      }
-    });
+    //     const comment = {
+    //       emoji: emojiUrl,
+    //       text: commentText,
+    //       author: `somebody`,
+    //       commentDay: dateComment,
+    //     };
+    //     this._onDataChange(this, card, Object.assign({}, card, {
+    //       countComments: card.countComments + 1,
+    //       comments: [].concat(comment, card.comments.slice(0)),
+    //     }));
+    //   }
+    // });
 
     if (oldPopupComponent && oldCardComponent) {
       replace(this._cardComponent, oldCardComponent);
@@ -157,10 +167,18 @@ export default class MovieController {
     }
   }
 
-  _openPopup() {
+  _openPopup(card) {
+    const id = card.id;
     this._onViewChange();
     const siteFooterElement = document.querySelector(`.footer`);
     render(siteFooterElement, this._popupComponent.getElement(), RenderPosition.AFTERBEGIN);
+    api.getComments(id).then((comments) => {
+      this._commentsComponent = new CommentsComponent(comments);
+      // console.log(this._commentsComponent);
+    });
+    // console.log(this._commentsComponent.getElement())
+
+    render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND)
     this._mode = Mode.POPUP;
     document.addEventListener(`keydown`, (evt) => {
       this._onEscKeyDown(evt);
