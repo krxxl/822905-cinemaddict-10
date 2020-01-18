@@ -38,6 +38,14 @@ export default class MovieController {
 
     this._cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
       this._openPopup(card);
+      if (card.personalRating) {
+        const buttons = document.querySelectorAll(`.film-details__user-rating-input`);
+        buttons.forEach((button) => {
+          if (+button.value === card.personalRating) {
+            button.checked = true;
+          }
+        });
+      }
     });
 
     this._popupComponent.setClosePopupHandler(() => {
@@ -103,12 +111,21 @@ export default class MovieController {
       onWatched(evt);
     });
 
+    this._popupComponent.setUndoButtomClickHandler((evt) => {
+      onWatched(evt);
+    });
+
     this._popupComponent.setFavoriteButtonClickHandler((evt) => {
       onFavorite(evt);
     });
 
     this._cardComponent.setFavoriteButtonClickHandler((evt) => {
       onFavorite(evt);
+    });
+
+    this._popupComponent.setPersonalRating((evt) => {
+      evt.preventDefault();
+      const rating = evt.target;
     });
 
     // this._popupComponent.setCloseButtonClickHandler((evt) => {

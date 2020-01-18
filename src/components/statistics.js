@@ -13,9 +13,8 @@ const createColor = () => {
 };
 
 const createArray = (cards, dateFrom, dateTo) => {
-  const watchedCards = cards;
-  return watchedCards.slice().filter((card) => {
-    const watched = card.dateWatched;
+  return cards.slice().filter((card) => {
+    const watched = new Date(card.dateWatched);
     return watched >= dateFrom && watched <= dateTo;
   });
 };
@@ -69,9 +68,10 @@ const getArrays = (cards) => {
 };
 
 const totalDuration = (cards) => {
-  let sumDuration;
+  let sumDuration = 0;
   cards.forEach((card) => {
-    sumDuration = card.duration;
+    sumDuration += +card.duration;
+
   });
   let hours = sumDuration / 60 ^ 0;
   let min;
@@ -266,6 +266,8 @@ export default class Statistics extends AbstractSmartComponent {
     this._renderCharts();
   }
 
+
+
   _renderCharts() {
     const element = this.getElement();
 
@@ -309,6 +311,7 @@ export default class Statistics extends AbstractSmartComponent {
   }
 
   getArray(filter, array) {
+
     let newArray = [];
     const dateTo = new Date();
     let dateFrom = null;
@@ -324,7 +327,6 @@ export default class Statistics extends AbstractSmartComponent {
         })();
 
         newArray = createArray(array, dateFrom, dateTo);
-
         break;
       case `statistic-week`:
         dateFrom = (() => {
@@ -360,7 +362,7 @@ export default class Statistics extends AbstractSmartComponent {
       evt.preventDefault();
       this._filterName = evt.target.id;
 
-      this.rerender(this.getArray(this._filterName, this._allCards), this._filterName);
+      this.rerender(this.getArray(this._filterName, this._allCards));
     });
   }
 }

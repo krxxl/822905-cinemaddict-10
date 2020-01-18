@@ -18,13 +18,14 @@ const createProfileTemplate = (cards) => {
 
 export default class Profile extends AbstractComponent {
 
-  constructor(cards) {
+  constructor(cardsModel) {
     super();
-    this._cards = cards.getCards();
+    this._cards = null;
+    this._cardsModel = cardsModel;
   }
 
   getTemplate() {
-    console.log(this._cards)
+    this._cards = this._cardsModel.getCards();
     return createProfileTemplate(getWatchedCards(this._cards));
   }
 }

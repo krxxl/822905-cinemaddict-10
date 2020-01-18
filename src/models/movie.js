@@ -19,8 +19,8 @@ export default class Card {
     this.comments =  data[`comments`],
     this.id = data[`id`],
     this.dateWatched = data.user_details[`watching_date`],
-    this.title_origin = data.film_info[`alternative_title`],
-    this.personal_rating = data.user_details[`personal_rating`]
+    this.titleOrigin = data.film_info[`alternative_title`],
+    this.personalRating = data.user_details[`personal_rating`]
 
     // this.id = data[`id`];
     // this.description = data[`description`] || ``;

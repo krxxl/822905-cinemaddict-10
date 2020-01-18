@@ -30,8 +30,10 @@ const genresTemplate = (genre) => {
 //   );
 // };
 
+
 const ratingTemplate = (card) => {
   const {title, poster} = card;
+
   return (`<div class="form-details__middle-container">
       <section class="film-details__user-rating-wrap">
         <div class="film-details__user-rating-controls">
@@ -85,7 +87,7 @@ const ratingTemplate = (card) => {
 };
 
 const createPopupTemplate = (card) => {
-  const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, comments} = card;
+  const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, titleOrigin} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
   // const comment = comments.map((it, index) => commentTemplate(it, index)).join(`\n`);
   // const countComments = comments.length;
@@ -125,7 +127,7 @@ const createPopupTemplate = (card) => {
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${title}</p>
+                <p class="film-details__title-original">Original: ${titleOrigin}</p>
               </div>
 
               <div class="film-details__rating">
@@ -219,6 +221,20 @@ export default class Popup extends AbstractComponent {
   setFavoriteButtonClickHandler(handler) {
     this.getElement().querySelector(`#favorite`)
       .addEventListener(`change`, handler);
+  }
+
+  setUndoButtomClickHandler(handler) {
+    if (this.getElement().querySelector(`.film-details__watched-reset`)) {
+      this.getElement().querySelector(`.film-details__watched-reset`)
+        .addEventListener(`click`, handler);
+    }
+  }
+
+  setPersonalRating(handler) {
+    if (this.getElement().querySelector(`.film-details__user-rating-score`)) {
+      this.getElement().querySelector(`.film-details__user-rating-score`)
+        .addEventListener(`change`, (handler));
+    }
   }
 
   // setCloseButtonClickHandler(handler) {

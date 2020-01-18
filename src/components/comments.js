@@ -1,8 +1,27 @@
 import AbstractComponent from './abstract-component.js';
 import {formatDateComment} from '../utils/common.js';
 
+const getEmojiUrl = (emoji) => {
+  switch (emoji) {
+    case `sleeping`:
+      return `images/emoji/sleeping.png`;
+    case `trophy`:
+      return `images/emoji/trophy.png`;
+    case `angry`:
+      return `images/emoji/angry.png`;
+    case `smile`:
+      return `images/emoji/smile.png`;
+    case `puke`:
+      return `images/emoji/puke.png`;
+  }
+  return false;
+};
+
 const commentTemplate = (comment, index) => {
   let {emoji, text, author, commentDay} = comment;
+
+  const emojiUrl = getEmojiUrl(emoji);
+
   if (text.length > 140) {
     text = text.slice(0, 139) + `...`;
   }
@@ -10,7 +29,7 @@ const commentTemplate = (comment, index) => {
   return (
     `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
-      <img src=${emoji} width="55" height="55" alt="emoji">
+      <img src=${emojiUrl} width="55" height="55" alt="emoji">
     </span>
     <div>
       <p class="film-details__comment-text">${description}</p>
@@ -25,26 +44,7 @@ const commentTemplate = (comment, index) => {
 };
 
 const createCommentsTemplate = (comments) => {
-  // const comments = [
-  //   {
-  //     emoji: `images/emoji/angry.png`,
-  //     text: `sdgsdfgsdfg`,
-  //     author: `jd`,
-  //     commentDay: `01.01.2001`
-  //   },
-  //   {
-  //     emoji: `images/emoji/angry.png`,
-  //     text: `dsfgsdfg`,
-  //     author: `jd`,
-  //     commentDay: `01.01.2001`
-  //   },
-  //   {
-  //     emoji: `images/emoji/angry.png`,
-  //     text: `sdfgsdfgsdf`,
-  //     author: `jd`,
-  //     commentDay: `01.01.2001`
-  //   }
-  // ];
+
   const countComments = comments.length;
   const comment = comments.map((it, index) => commentTemplate(it, index)).join(`\n`);
   return (
@@ -97,6 +97,7 @@ export default class Comments extends AbstractComponent {
   }
 
   getTemplate() {
+    console.log(this._comments)
     return createCommentsTemplate(this._comments);
   }
 }

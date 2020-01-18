@@ -10,6 +10,7 @@ import {getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 import CardsModel from './models/movies.js';
 import FilterController from './controllers/filters.js';
+import StatisticsController from './controllers/statistics.js';
 import API from './api.js';
 
 
@@ -46,11 +47,12 @@ const profileComponent = new ProfileComponent(cardsModel);
 // })();
 
 // const statisticsComponent = new StatisticsComponent(cardsModel);
+const statisticsController = new StatisticsController(siteMainElement, cardsModel);
 
 
 
 
-// render(siteMainElement, statisticsComponent.getElement(), RenderPosition.BEFOREEND);
+//
 
 // const statics = document.querySelector(`.footer__statistics>p`);
 // statics.textContent = `${CARD_COUNT} movies inside`;
@@ -59,7 +61,7 @@ const profileComponent = new ProfileComponent(cardsModel);
 // rank.textContent = `${getRank(watchedCardsCount)}`;
 
 
-// statisticsComponent.hide();
+
 // pageController.render();
 
 // statisticsComponent.setPeriodChangeHandler(() => {
@@ -68,19 +70,21 @@ const profileComponent = new ProfileComponent(cardsModel);
 statsMenu.setStatsChangeHandler((state) => {
   switch (state) {
     case `no-active`:
-      // statisticsComponent.hide();
+      statisticsController.hide();
       pageController.show();
+      sorts.show();
       break;
     case `active`:
-      // statisticsComponent.show();
+      statisticsController.show();
       pageController.hide();
+      sorts.hide();
       break;
   }
 });
 
 api.getCards()
   .then((cards) => {
-    console.log(cards)
+
     cardsModel.setCards(cards);
     pageController.render();
     filterController.render();
@@ -93,4 +97,12 @@ api.getCards()
     render(siteMainElement, sorts.getElement(), RenderPosition.BEFOREEND);
 
     render(siteMainElement, cardList.getElement(), RenderPosition.BEFOREEND);
+
+    const statics = document.querySelector(`.footer__statistics>p`);
+    statics.textContent = `${cards.length} movies inside`;
+
+    statisticsController.render();
+    // render(siteMainElement, statisticsComponent.getElement(), RenderPosition.BEFOREEND);
+
+    statisticsController.hide();
   });
