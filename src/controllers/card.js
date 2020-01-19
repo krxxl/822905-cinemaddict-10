@@ -1,6 +1,14 @@
 import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
+import CommentsComponent from '../components/comments.js';
+import API from '../api.js';
+import Card from '../models/movie.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
+
+
+const AUTHORIZATION = `Basic KJgykjbsdajfjasd=`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
+const api = new API(END_POINT, AUTHORIZATION);
 
 const Mode = {
   DEFAULT: `default`,
@@ -15,6 +23,7 @@ export default class MovieController {
 
     this._cardComponent = null;
     this._popupComponent = null;
+    this._commentsComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
@@ -22,12 +31,21 @@ export default class MovieController {
   render(card) {
     const oldCardComponent = this._cardComponent;
     const oldPopupComponent = this._popupComponent;
-
+    // console.log(this._commentsComponent.getElement())
     this._cardComponent = new CardComponent(card);
     this._popupComponent = new PopupComponent(card);
 
+
     this._cardComponent.setPopupOpenHadlerHandler([`.film-card__poster`, `.film-card__title`, `.film-card__comments`], () => {
-      this._openPopup();
+      this._openPopup(card);
+      if (card.personalRating) {
+        const buttons = document.querySelectorAll(`.film-details__user-rating-input`);
+        buttons.forEach((button) => {
+          if (+button.value === card.personalRating) {
+            button.checked = true;
+          }
+        });
+      }
     });
 
     this._popupComponent.setClosePopupHandler(() => {
@@ -43,9 +61,15 @@ export default class MovieController {
       // } else {
       //   watchlist.innerText = +watchlistVal - 1;
       // }
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isInWatchlist: !card.isInWatchlist,
-      }));
+
+      const newCard = Card.clone(card);
+      newCard.isInWatchlist = !newCard.isInWatchlist;
+
+      this._onDataChange(this, card, newCard);
+
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isInWatchlist: !card.isInWatchlist,
+      // }));
     };
 
     const onWatched = (evt) => {
@@ -57,10 +81,21 @@ export default class MovieController {
       // } else {
       //   watched.innerText = +watchedVal - 1;
       // }
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isWatched: !card.isWatched,
-        watchedDate: new Date()
-      }));
+      const newCard = Card.clone(card);
+      newCard.isWatched = !newCard.isWatched;
+      if (!newCard.isWatched) {
+        newCard.personalRating = 0;
+        newCard.watchedDate = ``;
+      } else {
+        newCard.watchedDate = new Date();
+      }
+
+      this._onDataChange(this, card, newCard);
+
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isWatched: !card.isWatched,
+      //   watchedDate: new Date()
+      // }));
     };
 
     const onFavorite = (evt) => {
@@ -72,9 +107,22 @@ export default class MovieController {
       // } else {
       //   favorites.innerText = +favoritesVal - 1;
       // }
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isFavorite: !card.isFavorite,
-      }));
+      const newCard = Card.clone(card);
+      newCard.isFavorite = !newCard.isFavorite;
+
+      this._onDataChange(this, card, newCard);
+
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isFavorite: !card.isFavorite,
+      // }));
+    };
+
+    const onRating = (evt, rating) => {
+      evt.preventDefault();
+      const newCard = Card.clone(card);
+      newCard.personalRating = +rating;
+
+      this._onDataChange(this, card, newCard);
     };
 
     this._cardComponent.setWatchListButtonClickHandler((evt) => {
@@ -93,6 +141,10 @@ export default class MovieController {
       onWatched(evt);
     });
 
+    this._popupComponent.setUndoButtomClickHandler((evt) => {
+      onWatched(evt);
+    });
+
     this._popupComponent.setFavoriteButtonClickHandler((evt) => {
       onFavorite(evt);
     });
@@ -101,49 +153,68 @@ export default class MovieController {
       onFavorite(evt);
     });
 
-    this._popupComponent.setCloseButtonClickHandler((evt) => {
+    this._popupComponent.setPersonalRating((evt) => {
       evt.preventDefault();
-      // console.log(evt)
-      if (evt.target.className === `film-details__comment-delete`) {
-        const index = +evt.target.dataset.index;
+      const rating = evt.target.value;
 
-        this._onDataChange(this, card, Object.assign({}, card, {
-          countComments: card.countComments - 1,
-          comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
-        }));
-      }
-
+      onRating(evt, rating);
     });
 
-    this._popupComponent.setSendCommentHandler((evt) => {
-      if (evt.keyCode === 13 && evt.ctrlKey) {
-        const commentText = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
-        const dateComment = new Date();
-        let emojiUrl = ``;
-        const emojies = this._popupComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
-        emojies.forEach((emoji) => {
-          if (emoji.checked) {
-            emojiUrl = emoji.nextElementSibling.querySelector(`img`).src;
-          }
-        });
+    // this._popupComponent.setCloseButtonClickHandler((evt) => {
+    //   evt.preventDefault();
+    //   // console.log(evt)
+    //   if (evt.target.className === `film-details__comment-delete`) {
+    //     const index = +evt.target.dataset.index;
 
-        const comment = {
-          emoji: emojiUrl,
-          text: commentText,
-          author: `somebody`,
-          commentDay: dateComment,
-        };
-        this._onDataChange(this, card, Object.assign({}, card, {
-          countComments: card.countComments + 1,
-          comments: [].concat(comment, card.comments.slice(0)),
-        }));
-      }
-    });
+    //     this._onDataChange(this, card, Object.assign({}, card, {
+    //       countComments: card.countComments - 1,
+    //       comments: [].concat(card.comments.slice(0, index), card.comments.slice(index + 1)),
+    //     }));
+    //   }
+
+    // });
+
+    // this._popupComponent.setSendCommentHandler((evt) => {
+    //   if (evt.keyCode === 13 && evt.ctrlKey) {
+    //     const commentText = this._popupComponent.getElement().querySelector(`.film-details__comment-input`).value;
+    //     const dateComment = new Date();
+    //     let emojiUrl = ``;
+    //     const emojies = this._popupComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
+    //     emojies.forEach((emoji) => {
+    //       if (emoji.checked) {
+    //         emojiUrl = emoji.nextElementSibling.querySelector(`img`).src;
+    //       }
+    //     });
+
+    //     const comment = {
+    //       emoji: emojiUrl,
+    //       text: commentText,
+    //       author: `somebody`,
+    //       commentDay: dateComment,
+    //     };
+    //     this._onDataChange(this, card, Object.assign({}, card, {
+    //       countComments: card.countComments + 1,
+    //       comments: [].concat(comment, card.comments.slice(0)),
+    //     }));
+    //   }
+    // });
 
     if (oldPopupComponent && oldCardComponent) {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);
-
+      const id = card.id;
+      api.getComments(id).then((comments) => {
+        this._commentsComponent = new CommentsComponent(comments);
+        render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
+      });
+      if (card.personalRating) {
+        const buttons = document.querySelectorAll(`.film-details__user-rating-input`);
+        buttons.forEach((button) => {
+          if (+button.value === card.personalRating) {
+            button.checked = true;
+          }
+        });
+      }
     } else {
 
       render(this._container, this._cardComponent.getElement(), RenderPosition.BEFOREEND);
@@ -157,10 +228,17 @@ export default class MovieController {
     }
   }
 
-  _openPopup() {
+  _openPopup(card) {
+    const id = card.id;
     this._onViewChange();
     const siteFooterElement = document.querySelector(`.footer`);
     render(siteFooterElement, this._popupComponent.getElement(), RenderPosition.AFTERBEGIN);
+    api.getComments(id).then((comments) => {
+      this._commentsComponent = new CommentsComponent(comments);
+      render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
+    });
+
+
     this._mode = Mode.POPUP;
     document.addEventListener(`keydown`, (evt) => {
       this._onEscKeyDown(evt);

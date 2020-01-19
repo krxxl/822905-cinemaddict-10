@@ -6,6 +6,14 @@ export const SortType = {
   DEFAULT: `default`,
 };
 
+const addClassActive = (curSort) => {
+  const sorts = document.querySelectorAll(`.sort__button`);
+  sorts.forEach((sort) => {
+    sort.classList.remove(`sort__button--active`);
+  });
+  curSort.classList.add(`sort__button--active`);
+};
+
 const createSortTemplate = () => {
   return (
     `<ul class="sort">
@@ -39,9 +47,12 @@ export default class Sort extends AbstractComponent {
 
       const sortType = evt.target.dataset.sortType;
 
+      addClassActive(evt.target);
+
       if (this._currenSortType === sortType) {
         return;
       }
+
 
       this._currenSortType = sortType;
 

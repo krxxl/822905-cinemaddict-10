@@ -21,7 +21,7 @@ const renderCards = (container, cards, onDataChange, onViewChange) => {
 };
 
 export default class PageController {
-  constructor(container, sorts, cardsModel) {
+  constructor(container, sorts, cardsModel, api) {
     this._container = container;
     this._sortComponent = sorts;
     this._cardsModel = cardsModel;
@@ -31,7 +31,7 @@ export default class PageController {
     this._mostCommentedComponent = new MostCommentedComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._mainListComponent = new MainListComponent();
-
+    this._api = api;
     // this._cards = [];
     this._showedCardsControllers = [];
 
@@ -193,11 +193,17 @@ export default class PageController {
   }
 
   _onDataChange(CardController, oldData, newData) {
-    const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
+    this._api.updateCard(oldData.id, newData)
+        .then((cardModel) => {
 
-    if (isSuccess) {
-      CardController.render(newData);
-    }
+          const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
+
+          if (isSuccess) {
+            CardController.render(cardModel);
+          }
+
+        });
+
   }
 
   _onViewChange() {

@@ -3,7 +3,8 @@ import {formatDateYearOnly, getDuration} from '../utils/common.js';
 // import AbstractSmartComponent from './abstract-smart-component.js';
 
 const createCardTemplate = (card) => {
-  const {title, poster, rating, date, duration, genres, countComments, description, isInWatchlist, isWatched, isFavorite} = card;
+  const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, comments} = card;
+  const countComments = comments.length;
   let classWatchlist = ``;
   let classWatched = ``;
   let classFavorite = ``;
