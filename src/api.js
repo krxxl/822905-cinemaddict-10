@@ -34,7 +34,7 @@ const API = class {
       .then(Comment.parseComments);
   }
 
-  createCommit(data) {
+  createCommit() {
   }
 
   updateCard(id, data) {
@@ -48,7 +48,7 @@ const API = class {
       .then(Card.parseCard);
   }
 
-  deleteCommit(id) {
+  deleteCommit() {
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

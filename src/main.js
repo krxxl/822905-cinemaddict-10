@@ -50,8 +50,6 @@ const profileComponent = new ProfileComponent(cardsModel);
 const statisticsController = new StatisticsController(siteMainElement, cardsModel);
 
 
-
-
 //
 
 // const statics = document.querySelector(`.footer__statistics>p`);
@@ -59,7 +57,6 @@ const statisticsController = new StatisticsController(siteMainElement, cardsMode
 
 // const rank = document.querySelector(`.profile__rating`);
 // rank.textContent = `${getRank(watchedCardsCount)}`;
-
 
 
 // pageController.render();

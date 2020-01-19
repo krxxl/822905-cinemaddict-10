@@ -267,7 +267,6 @@ export default class Statistics extends AbstractSmartComponent {
   }
 
 
-
   _renderCharts() {
     const element = this.getElement();
 

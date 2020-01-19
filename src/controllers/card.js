@@ -202,7 +202,6 @@ export default class MovieController {
     if (oldPopupComponent && oldCardComponent) {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);
-      console.log(card.personalRating)
       const id = card.id;
       api.getComments(id).then((comments) => {
         this._commentsComponent = new CommentsComponent(comments);

@@ -5,9 +5,6 @@ export default class StatisticsController {
   constructor(container, cardsModel) {
     this._container = container;
     this._cardsModel = cardsModel;
-
-
-
   }
 
   render() {
@@ -22,14 +19,12 @@ export default class StatisticsController {
   }
 
   hide() {
-    this._statisticsComponent.hide()
+    this._statisticsComponent.hide();
   }
 
   show() {
-    this._statisticsComponent.show()
+    this._statisticsComponent.show();
   }
-
-
 
   // _onFilterChange(filterType) {
   //   this._cardsModel.setFilter(filterType);

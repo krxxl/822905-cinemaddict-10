@@ -3,7 +3,7 @@ import {getRank} from '../mock/filter.js';
 
 const getWatchedCards = (cards) => {
   return cards.filter((card) => card.isWatched);
-}
+};
 
 
 const createProfileTemplate = (cards) => {
