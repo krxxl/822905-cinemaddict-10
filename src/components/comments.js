@@ -97,7 +97,6 @@ export default class Comments extends AbstractComponent {
   }
 
   getTemplate() {
-    console.log(this._comments)
     return createCommentsTemplate(this._comments);
   }
 }

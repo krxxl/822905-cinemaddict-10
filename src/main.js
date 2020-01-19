@@ -2,11 +2,11 @@
 import PageController from './controllers/page.js';
 import ProfileComponent from './components/profile.js';
 import CardListsComponent from './components/card-list.js';
-import StatisticsComponent from './components/statistics.js';
+// import StatisticsComponent from './components/statistics.js';
 import StatsMenuComponent from './components/stats-menu.js';
 import SiteSortComponent from './components/sort.js';
 // import {generateCards} from './mock/card.js';
-import {getRank} from './mock/filter.js';
+// import {getRank} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 import CardsModel from './models/movies.js';
 import FilterController from './controllers/filters.js';
@@ -33,7 +33,7 @@ const filterController = new FilterController(siteMainElement, cardsModel);
 const cardList = new CardListsComponent();
 const statsMenu = new StatsMenuComponent();
 const sorts = new SiteSortComponent();
-const pageController = new PageController(cardList, sorts, cardsModel);
+const pageController = new PageController(cardList, sorts, cardsModel, api);
 const profileComponent = new ProfileComponent(cardsModel);
 
 // cardsModel.setCards(cards);

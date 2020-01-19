@@ -2,7 +2,7 @@ import CardComponent from '../components/card.js';
 import PopupComponent from '../components/popup.js';
 import CommentsComponent from '../components/comments.js';
 import API from '../api.js';
-
+import Card from '../models/movie.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
 
 
@@ -61,9 +61,15 @@ export default class MovieController {
       // } else {
       //   watchlist.innerText = +watchlistVal - 1;
       // }
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isInWatchlist: !card.isInWatchlist,
-      }));
+
+      const newCard = Card.clone(card);
+      newCard.isInWatchlist = !newCard.isInWatchlist;
+
+      this._onDataChange(this, card, newCard);
+
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isInWatchlist: !card.isInWatchlist,
+      // }));
     };
 
     const onWatched = (evt) => {
@@ -75,10 +81,21 @@ export default class MovieController {
       // } else {
       //   watched.innerText = +watchedVal - 1;
       // }
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isWatched: !card.isWatched,
-        watchedDate: new Date()
-      }));
+      const newCard = Card.clone(card);
+      newCard.isWatched = !newCard.isWatched;
+      if (!newCard.isWatched) {
+        newCard.personalRating = 0;
+        newCard.watchedDate = ``;
+      } else {
+        newCard.watchedDate = new Date();
+      }
+
+      this._onDataChange(this, card, newCard);
+
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isWatched: !card.isWatched,
+      //   watchedDate: new Date()
+      // }));
     };
 
     const onFavorite = (evt) => {
@@ -90,9 +107,22 @@ export default class MovieController {
       // } else {
       //   favorites.innerText = +favoritesVal - 1;
       // }
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isFavorite: !card.isFavorite,
-      }));
+      const newCard = Card.clone(card);
+      newCard.isFavorite = !newCard.isFavorite;
+
+      this._onDataChange(this, card, newCard);
+
+      // this._onDataChange(this, card, Object.assign({}, card, {
+      //   isFavorite: !card.isFavorite,
+      // }));
+    };
+
+    const onRating = (evt, rating) => {
+      evt.preventDefault();
+      const newCard = Card.clone(card);
+      newCard.personalRating = +rating;
+
+      this._onDataChange(this, card, newCard);
     };
 
     this._cardComponent.setWatchListButtonClickHandler((evt) => {
@@ -125,7 +155,9 @@ export default class MovieController {
 
     this._popupComponent.setPersonalRating((evt) => {
       evt.preventDefault();
-      const rating = evt.target;
+      const rating = evt.target.value;
+
+      onRating(evt, rating);
     });
 
     // this._popupComponent.setCloseButtonClickHandler((evt) => {
@@ -170,7 +202,20 @@ export default class MovieController {
     if (oldPopupComponent && oldCardComponent) {
       replace(this._cardComponent, oldCardComponent);
       replace(this._popupComponent, oldPopupComponent);
-
+      console.log(card.personalRating)
+      const id = card.id;
+      api.getComments(id).then((comments) => {
+        this._commentsComponent = new CommentsComponent(comments);
+        render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
+      });
+      if (card.personalRating) {
+        const buttons = document.querySelectorAll(`.film-details__user-rating-input`);
+        buttons.forEach((button) => {
+          if (+button.value === card.personalRating) {
+            button.checked = true;
+          }
+        });
+      }
     } else {
 
       render(this._container, this._cardComponent.getElement(), RenderPosition.BEFOREEND);
@@ -192,9 +237,7 @@ export default class MovieController {
     api.getComments(id).then((comments) => {
       this._commentsComponent = new CommentsComponent(comments);
       render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
-      // console.log(this._commentsComponent);
     });
-    // console.log(this._commentsComponent.getElement())
 
 
     this._mode = Mode.POPUP;

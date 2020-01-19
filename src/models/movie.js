@@ -6,10 +6,9 @@ export default class Card {
     this.date = data.film_info.release[`date`],
     this.duration = data.film_info[`runtime`],
     this.genres = data.film_info[`genre`],
-    // this.countComments = this.countComments(this.comments),
     this.description = data.film_info[`description`],
-    this.isInWatchlist =  data.user_details[`watchlist`],
-    this.isWatched =  data.user_details[`already_watched`],
+    this.isInWatchlist = data.user_details[`watchlist`],
+    this.isWatched = data.user_details[`already_watched`],
     this.isFavorite =  data.user_details[`favorite`],
     this.age = data.film_info[`age_rating`],
     this.director = data.film_info[`director`],
@@ -21,27 +20,36 @@ export default class Card {
     this.dateWatched = data.user_details[`watching_date`],
     this.titleOrigin = data.film_info[`alternative_title`],
     this.personalRating = data.user_details[`personal_rating`]
-
-    // this.id = data[`id`];
-    // this.description = data[`description`] || ``;
-    // this.dueDate = data[`due_date`] ? new Date(data[`due_date`]) : null;
-    // this.tags = new Set(data[`tags`] || []);
-    // this.repeatingDays = data[`repeating_days`];
-    // this.color = data[`color`];
-    // this.isFavorite = Boolean(data[`is_favorite`]);
-    // this.isArchive = Boolean(data[`is_archived`]);
   }
 
   toRAW() {
     return {
-      // 'id': this.id,
-      // 'description': this.description,
-      // 'due_date': this.dueDate ? this.dueDate.toISOString() : null,
-      // 'tags': Array.from(this.tags),
-      // 'repeating_days': this.repeatingDays,
-      // 'color': this.color,
-      // 'is_favorite': this.isFavorite,
-      // 'is_archived': this.isArchive,
+      'id': this.id,
+      'comments': this.comments,
+      'film_info': {
+        'title': this.title,
+        'alternative_title': this.titleOrigin,
+        'total_rating': this.rating,
+        'poster': this.poster,
+        'age_rating': this.age,
+        'director': this.director,
+        'writers': this.writers,
+        'actors': this.actors,
+        'release': {
+          'date': this.date,
+          'release_country': this.country
+        },
+        'runtime': this.duration,
+        'genre': this.genres,
+        'description': this.description
+      },
+      'user_details': {
+        'personal_rating': this.personalRating,
+        'watchlist': this.isInWatchlist,
+        'already_watched': this.isWatched,
+        'watching_date': this.dateWatched,
+        'favorite': this.isFavorite
+      }
     };
   }
 
