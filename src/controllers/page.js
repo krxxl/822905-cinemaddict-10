@@ -203,7 +203,6 @@ export default class PageController {
           }
 
         });
-
   }
 
   _onViewChange() {
