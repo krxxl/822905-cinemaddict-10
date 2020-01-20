@@ -83,6 +83,7 @@ export default class PageController {
   _removeCards() {
     this._siteFilmListContainerElement.innerHTML = ``;
     this._showedCardsControllers = [];
+    this._showingCardsCount = SHOWING_CARDS_COUNT_BY_BUTTON;
   }
 
   _renderCards(cards) {
@@ -192,17 +193,33 @@ export default class PageController {
     }
   }
 
-  _onDataChange(CardController, oldData, newData) {
-    this._api.updateCard(oldData.id, newData)
-        .then((cardModel) => {
+  _onDataChange(CardController, oldData, newData, type) {
+    if (type === `cardType`) {
+      this._api.updateCard(oldData.id, newData)
+          .then((cardModel) => {
 
-          const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
+            const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
 
-          if (isSuccess) {
-            CardController.render(cardModel);
-          }
+            if (isSuccess) {
+              CardController.render(cardModel);
+            }
 
-        });
+          });
+    } else {
+      this._api.createComment(oldData.id, newData)
+      .then((commentModel) => {
+        console.log(commentModel);
+        CardController.render(oldData);
+        // this._tasksModel.addTask(taskModel);
+        // CardController.render(commentModel);
+
+        // const destroyedTask = this._showedTaskControllers.pop();
+        // destroyedTask.destroy();
+
+        // this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
+        // this._showingTasksCount = this._showedTaskControllers.length;
+      });
+    }
 
   }
 
