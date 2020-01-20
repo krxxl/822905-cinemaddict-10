@@ -34,7 +34,15 @@ const API = class {
       .then(Comment.parseComments);
   }
 
-  createCommit() {
+  createComment(id, comment) {
+    return this._load({
+      url: `comments/${id}`,
+      method: Method.POST,
+      body: JSON.stringify(comment.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json())
+      .then(Comment.parseComment);
   }
 
   updateCard(id, data) {
@@ -48,7 +56,8 @@ const API = class {
       .then(Card.parseCard);
   }
 
-  deleteCommit() {
+  deleteComment(id) {
+    return this._load({url: `comments/${id}`, method: Method.DELETE});
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {

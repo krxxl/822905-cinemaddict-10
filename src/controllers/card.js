@@ -3,6 +3,7 @@ import PopupComponent from '../components/popup.js';
 import CommentsComponent from '../components/comments.js';
 import API from '../api.js';
 import Card from '../models/movie.js';
+import Comment from '../models/comment.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
 
 
@@ -14,6 +15,15 @@ const Mode = {
   DEFAULT: `default`,
   POPUP: `popup`,
 };
+
+// const parseData = (data) => {
+
+//   return new Comment ({
+//     emoji: emojiUrl,
+//     text: commentText,
+//     commentDay: dateComment,
+//   });
+// };
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange) {
@@ -65,7 +75,7 @@ export default class MovieController {
       const newCard = Card.clone(card);
       newCard.isInWatchlist = !newCard.isInWatchlist;
 
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, `cardType`);
 
       // this._onDataChange(this, card, Object.assign({}, card, {
       //   isInWatchlist: !card.isInWatchlist,
@@ -90,7 +100,7 @@ export default class MovieController {
         newCard.watchedDate = new Date();
       }
 
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, `cardType`);
 
       // this._onDataChange(this, card, Object.assign({}, card, {
       //   isWatched: !card.isWatched,
@@ -110,7 +120,7 @@ export default class MovieController {
       const newCard = Card.clone(card);
       newCard.isFavorite = !newCard.isFavorite;
 
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, `cardType`);
 
       // this._onDataChange(this, card, Object.assign({}, card, {
       //   isFavorite: !card.isFavorite,
@@ -122,7 +132,7 @@ export default class MovieController {
       const newCard = Card.clone(card);
       newCard.personalRating = +rating;
 
-      this._onDataChange(this, card, newCard);
+      this._onDataChange(this, card, newCard, `cardType`);
     };
 
     this._cardComponent.setWatchListButtonClickHandler((evt) => {
@@ -236,6 +246,28 @@ export default class MovieController {
     api.getComments(id).then((comments) => {
       this._commentsComponent = new CommentsComponent(comments);
       render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
+
+      this._commentsComponent.setSendCommentHandler((evt) => {
+        if (evt.keyCode === 13 && evt.ctrlKey) {
+          const commentText = this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).value;
+          const dateComment = new Date();
+          let emojiUrl = ``;
+          const emojies = this._commentsComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
+          emojies.forEach((emoji) => {
+            if (emoji.checked) {
+              emojiUrl = emoji.id.slice(6);
+            }
+          });
+
+          const comment = new Comment({
+            'emotion': emojiUrl,
+            'comment': commentText,
+            'date': dateComment,
+          });
+          console.log(comment)
+          this._onDataChange(this, card, comment, `commentType`);
+        }
+      });
     });
 
 
