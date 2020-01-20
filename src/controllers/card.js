@@ -10,6 +10,7 @@ import {render, remove, replace, RenderPosition} from '../utils/render.js';
 const AUTHORIZATION = `Basic KJgykjbsdajfjasd=`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
 const api = new API(END_POINT, AUTHORIZATION);
+const SHAKE_ANIMATION_TIMEOUT = 600;
 
 const Mode = {
   DEFAULT: `default`,
@@ -166,7 +167,6 @@ export default class MovieController {
     this._popupComponent.setPersonalRating((evt) => {
       evt.preventDefault();
       const rating = evt.target.value;
-
       onRating(evt, rating);
     });
 
@@ -216,6 +216,37 @@ export default class MovieController {
       api.getComments(id).then((comments) => {
         this._commentsComponent = new CommentsComponent(comments);
         render(this._popupComponent.getElement().querySelector(`.form-details__bottom-container`), this._commentsComponent.getElement(), RenderPosition.BEFOREEND);
+        this._commentsComponent.setSendCommentHandler((evt) => {
+          if (evt.keyCode === 13 && evt.ctrlKey) {
+            const commentText = this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).value;
+            const dateComment = new Date();
+            let emojiUrl = ``;
+            const emojies = this._commentsComponent.getElement().querySelectorAll(`.film-details__emoji-item`);
+            emojies.forEach((emoji) => {
+              if (emoji.checked) {
+                emojiUrl = emoji.id.slice(6);
+              }
+            });
+
+            const comment = new Comment({
+              'emotion': emojiUrl,
+              'comment': commentText,
+              'date': dateComment,
+            });
+            this._onDataChange(this, card, comment, `commentType`);
+          }
+        });
+
+        this._commentsComponent.setCloseButtonClickHandler((evt) => {
+          evt.preventDefault();
+          // console.log(evt)
+          if (evt.target.className === `film-details__comment-delete`) {
+            const index = +evt.target.dataset.index;
+            const commentId = card.comments[index];
+            this._onDataChange(this, card, commentId, `commentDel`);
+          }
+
+        });
       });
       if (card.personalRating) {
         const buttons = document.querySelectorAll(`.film-details__user-rating-input`);
@@ -264,10 +295,23 @@ export default class MovieController {
             'comment': commentText,
             'date': dateComment,
           });
-          console.log(comment)
+
           this._onDataChange(this, card, comment, `commentType`);
         }
       });
+
+      this._commentsComponent.setCloseButtonClickHandler((evt) => {
+        evt.preventDefault();
+        // console.log(evt)
+        if (evt.target.className === `film-details__comment-delete`) {
+          const index = +evt.target.dataset.index;
+          const commentId = card.comments[index];
+
+          this._onDataChange(this, card, commentId, `commentDel`);
+        }
+
+      });
+
     });
 
 
@@ -276,6 +320,10 @@ export default class MovieController {
       this._onEscKeyDown(evt);
       // this._onCtrlEnterDown(evt);
     });
+  }
+
+  _setCommentEvents() {
+
   }
 
   _closePopup() {
@@ -302,4 +350,32 @@ export default class MovieController {
   //     }));
   //   }
   // }
+  shakeComments() {
+    this._commentsComponent.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `1px solid red`;
+    this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).setAttribute(`disabled`, `true`);
+    setTimeout(() => {
+      this._commentsComponent.getElement().style.animation = ``;
+      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).style.border = `none`;
+      this._commentsComponent.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`disabled`);
+
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  shakeRating() {
+    this._popupComponent.getElement().querySelector(`.film-details__inner`).style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    const dots = this._popupComponent.getElement().querySelectorAll(`.film-details__user-rating-label`);
+    dots.forEach((dot) => {
+      dot.style.background = `red`;
+    });
+    this._popupComponent.getElement().querySelector(`.film-details__inner`).setAttribute(`disabled`, `true`);
+    setTimeout(() => {
+      this._popupComponent.getElement().querySelector(`.film-details__inner`).style.animation = ``;
+      dots.forEach((dot) => {
+        dot.style.background = ``;
+      });
+      this._popupComponent.getElement().querySelector(`.film-details__inner`).removeAttribute(`disabled`);
+
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
 }

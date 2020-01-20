@@ -204,11 +204,30 @@ export default class PageController {
               CardController.render(cardModel);
             }
 
+          })
+          .catch(() => {
+            CardController.shakeRating();
           });
-    } else {
+    } else if (type === `commentType`) {
       this._api.createComment(oldData.id, newData)
-      .then((commentModel) => {
-        console.log(commentModel)
+      .then(() => {
+        CardController.render(oldData);
+        // this._tasksModel.addTask(taskModel);
+        // CardController.render(commentModel);
+
+        // const destroyedTask = this._showedTaskControllers.pop();
+        // destroyedTask.destroy();
+
+        // this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
+        // this._showingTasksCount = this._showedTaskControllers.length;
+      })
+      .catch(() => {
+        CardController.shakeComments();
+      });
+    } else {
+      this._api.deleteComment(newData)
+      .then(() => {
+
         CardController.render(oldData);
         // this._tasksModel.addTask(taskModel);
         // CardController.render(commentModel);

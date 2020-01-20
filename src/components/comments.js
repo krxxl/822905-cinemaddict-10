@@ -104,4 +104,9 @@ export default class Comments extends AbstractComponent {
     this.getElement().querySelector(`.film-details__comment-input`)
       .addEventListener(`keydown`, handler);
   }
+
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__comments-list`)
+      .addEventListener(`click`, handler);
+  }
 }
