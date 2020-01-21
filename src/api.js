@@ -42,7 +42,9 @@ const API = class {
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
-      .then(Comment.parseComment);
+      .then((response) => {
+        return Card.parseCard(response.movie);
+      });
   }
 
   updateCard(id, data) {

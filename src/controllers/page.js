@@ -210,8 +210,11 @@ export default class PageController {
           });
     } else if (type === `commentType`) {
       this._api.createComment(oldData.id, newData)
-      .then(() => {
-        CardController.render(oldData);
+      .then((newCard) => {
+        // console.log(newCard)
+
+        CardController.render(newCard);
+
         // this._tasksModel.addTask(taskModel);
         // CardController.render(commentModel);
 
@@ -222,7 +225,7 @@ export default class PageController {
         // this._showingTasksCount = this._showedTaskControllers.length;
       })
       .catch(() => {
-        CardController.shakeComments();
+        // CardController.shakeComments();
       });
     } else {
       this._api.deleteComment(newData)
