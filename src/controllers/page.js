@@ -129,7 +129,7 @@ export default class PageController {
     };
 
     const sortByComments = getSortByComments(this._cardsModel.getCards().slice());
-    console.log(sortByComments.slice(0, 2));
+
     const mostCommented = this._mostCommentedComponent;
     if (countOfAllComment > 0) {
       render(this._container.getElement(), mostCommented.getElement(), RenderPosition.BEFOREEND);
