@@ -24,7 +24,6 @@ export default class FilterController {
       return {
         name: filterType,
         count: getCardsByFilter(allCards, filterType).length,
-        // checked: filterType === this._activeFilterType,
       };
     });
     const oldComponent = this._filterComponent;

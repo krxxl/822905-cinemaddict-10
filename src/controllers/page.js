@@ -121,15 +121,15 @@ export default class PageController {
     let countOfAllComment = 0;
 
     this._cardsModel.getCards().forEach((card) => {
-      countOfAllComment += +card.countComments;
+      countOfAllComment += +card.comments.length;
     });
 
     const getSortByComments = (arr) => {
-      return arr.sort((a, b) => a.countComments > b.countComments ? -1 : 1);
+      return arr.sort((a, b) => b.comments.length - a.comments.length);
     };
 
     const sortByComments = getSortByComments(this._cardsModel.getCards().slice());
-
+    console.log(sortByComments.slice(0, 2));
     const mostCommented = this._mostCommentedComponent;
     if (countOfAllComment > 0) {
       render(this._container.getElement(), mostCommented.getElement(), RenderPosition.BEFOREEND);
@@ -169,10 +169,6 @@ export default class PageController {
 
     this._removeCards();
     this._renderCards(sortedCards);
-    // this._siteFilmListContainerElement.innerHTML = ``;
-
-    // const newCards = renderCards(this._siteFilmListContainerElement, sortedCards, this._onDataChange, this._onViewChange);
-    // this._showedCardsControllers = newCards;
 
     if (sortType === SortType.DEFAULT) {
       this._renderLoadMoreButton();
@@ -211,35 +207,15 @@ export default class PageController {
     } else if (type === `commentType`) {
       this._api.createComment(oldData.id, newData)
       .then((newCard) => {
-        // console.log(newCard)
-
         CardController.render(newCard);
-
-        // this._tasksModel.addTask(taskModel);
-        // CardController.render(commentModel);
-
-        // const destroyedTask = this._showedTaskControllers.pop();
-        // destroyedTask.destroy();
-
-        // this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
-        // this._showingTasksCount = this._showedTaskControllers.length;
       })
       .catch(() => {
-        // CardController.shakeComments();
+        CardController.shakeComments();
       });
     } else {
       this._api.deleteComment(newData)
       .then(() => {
-
         CardController.render(oldData);
-        // this._tasksModel.addTask(taskModel);
-        // CardController.render(commentModel);
-
-        // const destroyedTask = this._showedTaskControllers.pop();
-        // destroyedTask.destroy();
-
-        // this._showedTaskControllers = [].concat(taskController, this._showedTaskControllers);
-        // this._showingTasksCount = this._showedTaskControllers.length;
       });
     }
 

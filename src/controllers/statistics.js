@@ -25,13 +25,4 @@ export default class StatisticsController {
   show() {
     this._statisticsComponent.show();
   }
-
-  // _onFilterChange(filterType) {
-  //   this._cardsModel.setFilter(filterType);
-  //   this._activeFilterType = filterType;
-  // }
-
-  // _onDataChange() {
-  //   this.render();
-  // }
 }

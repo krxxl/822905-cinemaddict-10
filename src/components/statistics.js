@@ -2,7 +2,6 @@ import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getRank} from '../mock/filter.js';
-// import {duration} from 'moment';
 
 const getUniqItems = (item, index, array) => {
   return array.indexOf(item) === index;
@@ -88,21 +87,6 @@ const totalDuration = (cards) => {
 const getMostWatcheble = (cards) => {
 
   const {genresLabels, sortedGenres} = getArrays(cards);
-  // console.log(genresLabels)
-  // console.log(sortedGenres)
-
-  // const genresLabels = cards.map((card) => card.genres)
-  //   .reduce((acc, genres) => {
-  //     return acc.concat(Array.from(genres));
-  //   }, [])
-  //   .filter(getUniqItems);
-
-  // const sortedGenres = genresLabels.map((genre) => cards.reduce((acc, card) => {
-  //   const targetCardsCount = Array.from(card.genres)
-  //     .filter((it) => it === genre).length;
-
-  //   return acc + targetCardsCount;
-  // }, 0));
 
   const maxIndex = sortedGenres.indexOf(Math.max.apply(null, sortedGenres));
 
@@ -111,11 +95,6 @@ const getMostWatcheble = (cards) => {
 };
 
 const renderGenresChart = (tagsCtx, cards) => {
-  // const genresLabels = cards.map((card) => card.genres)
-  //   .reduce((acc, genres) => {
-  //     return acc.concat(Array.from(genres));
-  //   }, [])
-  //   .filter(getUniqItems);
   const {genresLabels, sortedGenres} = getArrays(cards);
 
   return new Chart(tagsCtx, {
