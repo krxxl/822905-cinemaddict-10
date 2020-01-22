@@ -83,6 +83,7 @@ export default class PageController {
   _removeCards() {
     this._siteFilmListContainerElement.innerHTML = ``;
     this._showedCardsControllers = [];
+    this._showingCardsCount = SHOWING_CARDS_COUNT_BY_BUTTON;
   }
 
   _renderCards(cards) {
@@ -120,11 +121,11 @@ export default class PageController {
     let countOfAllComment = 0;
 
     this._cardsModel.getCards().forEach((card) => {
-      countOfAllComment += +card.countComments;
+      countOfAllComment += +card.comments.length;
     });
 
     const getSortByComments = (arr) => {
-      return arr.sort((a, b) => a.countComments > b.countComments ? -1 : 1);
+      return arr.sort((a, b) => b.comments.length - a.comments.length);
     };
 
     const sortByComments = getSortByComments(this._cardsModel.getCards().slice());
@@ -168,10 +169,6 @@ export default class PageController {
 
     this._removeCards();
     this._renderCards(sortedCards);
-    // this._siteFilmListContainerElement.innerHTML = ``;
-
-    // const newCards = renderCards(this._siteFilmListContainerElement, sortedCards, this._onDataChange, this._onViewChange);
-    // this._showedCardsControllers = newCards;
 
     if (sortType === SortType.DEFAULT) {
       this._renderLoadMoreButton();
@@ -192,17 +189,35 @@ export default class PageController {
     }
   }
 
-  _onDataChange(CardController, oldData, newData) {
-    this._api.updateCard(oldData.id, newData)
-        .then((cardModel) => {
+  _onDataChange(CardController, oldData, newData, type) {
+    if (type === `cardType`) {
+      this._api.updateCard(oldData.id, newData)
+          .then((cardModel) => {
 
-          const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
+            const isSuccess = this._cardsModel.updateCard(oldData.id, newData);
 
-          if (isSuccess) {
-            CardController.render(cardModel);
-          }
+            if (isSuccess) {
+              CardController.render(cardModel);
+            }
 
-        });
+          })
+          .catch(() => {
+            CardController.shakeRating();
+          });
+    } else if (type === `commentType`) {
+      this._api.createComment(oldData.id, newData)
+      .then((newCard) => {
+        CardController.render(newCard);
+      })
+      .catch(() => {
+        CardController.shakeComments();
+      });
+    } else {
+      this._api.deleteComment(newData)
+      .then(() => {
+        CardController.render(oldData);
+      });
+    }
 
   }
 

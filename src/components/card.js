@@ -1,6 +1,5 @@
 import AbstractComponent from './abstract-component.js';
 import {formatDateYearOnly, getDuration} from '../utils/common.js';
-// import AbstractSmartComponent from './abstract-smart-component.js';
 
 const createCardTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, comments} = card;

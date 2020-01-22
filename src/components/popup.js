@@ -7,29 +7,6 @@ const genresTemplate = (genre) => {
   );
 };
 
-// const commentTemplate = (comment, index) => {
-//   let {emoji, text, author, commentDay} = comment;
-//   if (text.length > 140) {
-//     text = text.slice(0, 139) + `...`;
-//   }
-//   const description = window.he.encode(text);
-//   return (
-//     `<li class="film-details__comment">
-//     <span class="film-details__comment-emoji">
-//       <img src=${emoji} width="55" height="55" alt="emoji">
-//     </span>
-//     <div>
-//       <p class="film-details__comment-text">${description}</p>
-//       <p class="film-details__comment-info">
-//         <span class="film-details__comment-author">${author}</span>
-//         <span class="film-details__comment-day">${formatDateComment(commentDay)}</span>
-//         <button class="film-details__comment-delete" data-index="${index}" >Delete</button>
-//       </p>
-//     </div>
-//     </li>`
-//   );
-// };
-
 
 const ratingTemplate = (card) => {
   const {title, poster} = card;
@@ -89,8 +66,7 @@ const ratingTemplate = (card) => {
 const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, titleOrigin} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
-  // const comment = comments.map((it, index) => commentTemplate(it, index)).join(`\n`);
-  // const countComments = comments.length;
+
   let inWatchlist = ``;
   let watched = ``;
   let favorite = ``;
@@ -237,13 +213,4 @@ export default class Popup extends AbstractComponent {
     }
   }
 
-  // setCloseButtonClickHandler(handler) {
-  //   this.getElement().querySelector(`.film-details__comments-list`)
-  //     .addEventListener(`click`, handler);
-  // }
-
-  // setSendCommentHandler(handler) {
-  //   this.getElement().querySelector(`.film-details__comment-input`)
-  //     .addEventListener(`keydown`, handler);
-  // }
 }
