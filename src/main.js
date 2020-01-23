@@ -18,13 +18,15 @@ const siteMainElement = document.querySelector(`.main`);
 
 const api = new API(END_POINT, AUTHORIZATION);
 const cardsModel = new CardsModel();
-const filterController = new FilterController(siteMainElement, cardsModel);
+
 const cardList = new CardListsComponent();
 const statsMenu = new StatsMenuComponent();
 const sorts = new SiteSortComponent();
 const pageController = new PageController(cardList, sorts, cardsModel, api);
+
 const profileComponent = new ProfileComponent(cardsModel);
 const statisticsController = new StatisticsController(siteMainElement, cardsModel);
+const filterController = new FilterController(siteMainElement, cardsModel, pageController, sorts, statisticsController);
 
 statsMenu.setStatsChangeHandler((state) => {
   switch (state) {

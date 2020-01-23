@@ -27,3 +27,13 @@ export const getDuration = (randomTime) => {
   return randomTime;
 };
 
+export const getRank = (quantity) => {
+  if (quantity === 0) {
+    return null;
+  } else if (quantity >= 1 && quantity <= 10) {
+    return `novice`;
+  } else if (quantity >= 11 && quantity <= 20) {
+    return `fan`;
+  }
+  return `movie buff`;
+};

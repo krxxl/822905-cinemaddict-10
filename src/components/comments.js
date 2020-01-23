@@ -17,8 +17,8 @@ const getEmojiUrl = (emoji) => {
   return false;
 };
 
-const commentTemplate = (comment, index) => {
-  let {emoji, text, author, commentDay} = comment;
+const commentTemplate = (comment) => {
+  let {emoji, text, author, commentDay, id} = comment;
 
   const emojiUrl = getEmojiUrl(emoji);
 
@@ -36,7 +36,7 @@ const commentTemplate = (comment, index) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${formatDateComment(commentDay)}</span>
-        <button class="film-details__comment-delete" data-index="${index}" >Delete</button>
+        <button class="film-details__comment-delete" data-index="${id}" >Delete</button>
       </p>
     </div>
     </li>`
@@ -46,7 +46,7 @@ const commentTemplate = (comment, index) => {
 const createCommentsTemplate = (comments) => {
 
   const countComments = comments.length;
-  const comment = comments.map((it, index) => commentTemplate(it, index)).join(`\n`);
+  const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
   return (
     `<section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${countComments}</span></h3>

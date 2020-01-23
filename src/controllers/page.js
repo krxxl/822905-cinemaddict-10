@@ -32,7 +32,7 @@ export default class PageController {
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._mainListComponent = new MainListComponent();
     this._api = api;
-    // this._cards = [];
+
     this._showedCardsControllers = [];
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -56,7 +56,6 @@ export default class PageController {
 
   render() {
 
-    // this._cards = cards;
 
     const container = this._container.getElement();
     const cards = this._cardsModel.getCards();
@@ -70,8 +69,6 @@ export default class PageController {
     const mainList = this._mainListComponent;
     render(container, mainList.getElement(), RenderPosition.BEFOREEND);
 
-    // const newCards = renderCards(this._siteFilmListContainerElement, cards.slice(0, showingCardsCount), this._onDataChange, this._onViewChange);
-    // this._showedCardsControllers = this._showedCardsControllers.concat(newCards);
     this._renderCards(cards.slice(0, this._showingCardsCount));
     this._renderLoadMoreButton();
 
