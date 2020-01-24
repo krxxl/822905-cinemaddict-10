@@ -55,8 +55,6 @@ export default class PageController {
   }
 
   render() {
-
-
     const container = this._container.getElement();
     const cards = this._cardsModel.getCards();
 

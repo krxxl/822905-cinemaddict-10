@@ -1,4 +1,4 @@
-import AbstractComponent from './abstract-component.js';
+import AbstractSmartComponent from './abstract-smart-component.js';
 import {formatDateComment} from '../utils/common.js';
 
 const getEmojiUrl = (emoji) => {
@@ -36,7 +36,7 @@ const commentTemplate = (comment) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
         <span class="film-details__comment-day">${formatDateComment(commentDay)}</span>
-        <button class="film-details__comment-delete" data-index="${id}" >Delete</button>
+        <button class="film-details__comment-delete" id="${id}"  data-index="${id}" >Delete</button>
       </p>
     </div>
     </li>`
@@ -44,7 +44,6 @@ const commentTemplate = (comment) => {
 };
 
 const createCommentsTemplate = (comments) => {
-
   const countComments = comments.length;
   const comment = comments.map((it) => commentTemplate(it)).join(`\n`);
   return (
@@ -89,24 +88,43 @@ const createCommentsTemplate = (comments) => {
   );
 };
 
-export default class Comments extends AbstractComponent {
+export default class Comments extends AbstractSmartComponent {
 
   constructor(comments) {
     super();
     this._comments = comments;
+    this._sendHandler = null;
+    this._setCloseHandler = null;
   }
 
   getTemplate() {
     return createCommentsTemplate(this._comments);
   }
 
+  setData(data) {
+    document.getElementById(`${data}`).textContent = `Deleting...`;
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  recoveryListeners() {
+    this.setSendCommentHandler(this._sendHandler);
+    this.setCloseButtonClickHandler(this._setCloseHandler);
+  }
+
   setSendCommentHandler(handler) {
     this.getElement().querySelector(`.film-details__comment-input`)
       .addEventListener(`keydown`, handler);
+
+    this._sendHandler = handler;
   }
 
   setCloseButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-details__comments-list`)
       .addEventListener(`click`, handler);
+
+    this._setCloseHandler = handler;
   }
 }

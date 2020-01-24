@@ -3,6 +3,7 @@ import PageController from './controllers/page.js';
 import ProfileComponent from './components/profile.js';
 import CardListsComponent from './components/card-list.js';
 import StatsMenuComponent from './components/stats-menu.js';
+import LoadingComponent from './components/loading.js';
 import SiteSortComponent from './components/sort.js';
 import {render, RenderPosition} from './utils/render.js';
 import CardsModel from './models/movies.js';
@@ -15,7 +16,7 @@ const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
-
+const loadingComponent = new LoadingComponent();
 const api = new API(END_POINT, AUTHORIZATION);
 const cardsModel = new CardsModel();
 
@@ -43,9 +44,11 @@ statsMenu.setStatsChangeHandler((state) => {
   }
 });
 
+
+render(siteHeaderElement, loadingComponent.getElement(), RenderPosition.BEFOREEND);
 api.getCards()
   .then((cards) => {
-
+    loadingComponent.getElement().remove();
     cardsModel.setCards(cards);
     pageController.render();
     filterController.render();

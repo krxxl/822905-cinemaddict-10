@@ -185,6 +185,7 @@ export default class MovieController {
         evt.preventDefault();
         if (evt.target.className === `film-details__comment-delete`) {
           const commentId = +evt.target.dataset.index;
+          this._commentsComponent.setData(commentId);
           this._onDataChange(this, card, commentId, `commentDel`);
         }
 
