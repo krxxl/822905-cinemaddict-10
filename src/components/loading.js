@@ -2,7 +2,7 @@ import AbstractComponent from './abstract-component.js';
 
 const createLoadingTemplate = () => {
   return (
-    `<h2 class="loading">LOADING</section>`
+    `<h2 class="loading">LOADING...</section>`
   );
 };
 

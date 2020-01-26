@@ -45,7 +45,7 @@ statsMenu.setStatsChangeHandler((state) => {
 });
 
 
-render(siteHeaderElement, loadingComponent.getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, loadingComponent.getElement(), RenderPosition.BEFOREEND);
 api.getCards()
   .then((cards) => {
     loadingComponent.getElement().remove();

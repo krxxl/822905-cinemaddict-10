@@ -1101,3 +1101,9 @@ button {
 .shake {
   animation: shake 0.6s;
 }
+
+.loading {
+  font-size: 50px;
+  text-align: center;
+  padding: 100px 0;
+}
