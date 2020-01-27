@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {getRank} from '../mock/filter.js';
+import {getRank} from '../utils/common.js';
 
 const getWatchedCards = (cards) => {
   return cards.filter((card) => card.isWatched);

@@ -4,10 +4,12 @@ import {render, replace, RenderPosition} from '../utils/render.js';
 import {getCardsByFilter} from '../utils/filter.js';
 
 export default class FilterController {
-  constructor(container, cardsModel) {
+  constructor(container, cardsModel, pageController, sorts, statisticsController) {
     this._container = container;
     this._cardsModel = cardsModel;
-
+    this._pageController = pageController;
+    this._sorts = sorts;
+    this._statisticsController = statisticsController;
     this._activeFilterType = FilterType.ALL;
     this._filterComponent = null;
 
@@ -41,9 +43,17 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._cardsModel.setFilter(filterType);
     this._activeFilterType = filterType;
+    if (filterType) {
+      this._pageController.show();
+      this._sorts.show();
+      this._statisticsController.hide();
+      document.querySelector(`.main-navigation__item--additional`).classList.remove(`main-navigation__item--active`);
+    }
   }
 
   _onDataChange() {
     this.render();
   }
+
+
 }

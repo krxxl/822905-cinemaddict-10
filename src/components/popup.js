@@ -8,6 +8,20 @@ const genresTemplate = (genre) => {
 };
 
 
+const getDuration = (randomTime) => {
+  let hours = randomTime / 60 ^ 0;
+  if (hours) {
+    let min = randomTime % 60;
+    if (min < 10) {
+      min = `0 ${min}`;
+    }
+    randomTime = `${hours}h ${min}m`;
+  } else {
+    randomTime = `${randomTime}m`;
+  }
+  return randomTime;
+};
+
 const ratingTemplate = (card) => {
   const {title, poster} = card;
 
@@ -66,7 +80,8 @@ const ratingTemplate = (card) => {
 const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, titleOrigin} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
-
+  let descriptionText = description;
+  let runtime = getDuration(duration);
   let inWatchlist = ``;
   let watched = ``;
   let favorite = ``;
@@ -84,6 +99,9 @@ const createPopupTemplate = (card) => {
   }
   if (isFavorite) {
     favorite = `checked`;
+  }
+  if (descriptionText.length > 140) {
+    descriptionText = descriptionText.slice(0, 139) + `...`;
   }
   return (
     `<section class="film-details">
@@ -130,7 +148,7 @@ const createPopupTemplate = (card) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${runtime}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

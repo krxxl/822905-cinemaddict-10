@@ -1,7 +1,7 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getRank} from '../mock/filter.js';
+import {getRank} from '../utils/common.js';
 
 const getUniqItems = (item, index, array) => {
   return array.indexOf(item) === index;
