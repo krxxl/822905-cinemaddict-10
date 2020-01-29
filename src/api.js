@@ -8,12 +8,17 @@ const Method = {
   DELETE: `DELETE`
 };
 
+const StatusServer = {
+  OK: `200`,
+  MULTIPLE_CHOICES: `300`,
+};
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= StatusServer.OK && response.status < StatusServer.MULTIPLE_CHOICES) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 const API = class {

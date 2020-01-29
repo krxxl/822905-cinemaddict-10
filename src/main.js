@@ -10,6 +10,7 @@ import CardsModel from './models/movies.js';
 import FilterController from './controllers/filters.js';
 import StatisticsController from './controllers/statistics.js';
 import API from './api.js';
+import {StatsState} from './components/stats-menu.js';
 
 const AUTHORIZATION = `Basic KJgykjbsdajfjasd=`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
@@ -29,14 +30,14 @@ const profileComponent = new ProfileComponent(cardsModel);
 const statisticsController = new StatisticsController(siteMainElement, cardsModel);
 const filterController = new FilterController(siteMainElement, cardsModel, pageController, sorts, statisticsController);
 
-statsMenu.setStatsChangeHandler((state) => {
+statsMenu.setStatButtonChangeHandler((state) => {
   switch (state) {
-    case `no-active`:
+    case StatsState.NO_ACTIVE:
       statisticsController.hide();
       pageController.show();
       sorts.show();
       break;
-    case `active`:
+    case StatsState.ACTIVE:
       statisticsController.show();
       pageController.hide();
       sorts.hide();

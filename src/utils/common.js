@@ -1,5 +1,11 @@
 import moment from 'moment';
 
+const Rank = {
+  NOVICE: `novice`,
+  FAN: `fan`,
+  MOVIE_BUFF: `movie buff`,
+};
+
 export const formatDateWithMonths = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
 };
@@ -14,26 +20,22 @@ export const formatDateComment = (date) => {
 
 
 export const getDuration = (randomTime) => {
-  let hours = randomTime / 60 ^ 0;
-  if (hours) {
-    let min = randomTime % 60;
-    if (min < 10) {
-      min = `0 ${min}`;
-    }
-    randomTime = `${hours}h ${min}m`;
-  } else {
-    randomTime = `${randomTime}m`;
+  const hours = randomTime / 60 ^ 0;
+  if (!hours) {
+    return `${randomTime}m`;
   }
-  return randomTime;
+  const min = randomTime % 60;
+  const minutes = min < 10 ? `0${min}` : min;
+  return `${hours}h ${minutes}m`;
 };
 
 export const getRank = (quantity) => {
   if (quantity === 0) {
     return null;
   } else if (quantity >= 1 && quantity <= 10) {
-    return `novice`;
+    return Rank.NOVICE;
   } else if (quantity >= 11 && quantity <= 20) {
-    return `fan`;
+    return Rank.FAN;
   }
-  return `movie buff`;
+  return Rank.MOVIE_BUFF;
 };

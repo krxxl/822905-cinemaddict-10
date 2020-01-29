@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {formatDateWithMonths} from '../utils/common.js';
+import {formatDateWithMonths, getDuration} from '../utils/common.js';
 
 const genresTemplate = (genre) => {
   return (
@@ -7,20 +7,6 @@ const genresTemplate = (genre) => {
   );
 };
 
-
-const getDuration = (randomTime) => {
-  let hours = randomTime / 60 ^ 0;
-  if (hours) {
-    let min = randomTime % 60;
-    if (min < 10) {
-      min = `0 ${min}`;
-    }
-    randomTime = `${hours}h ${min}m`;
-  } else {
-    randomTime = `${randomTime}m`;
-  }
-  return randomTime;
-};
 
 const ratingTemplate = (card) => {
   const {title, poster} = card;
@@ -80,29 +66,14 @@ const ratingTemplate = (card) => {
 const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, titleOrigin} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
-  let descriptionText = description;
-  let runtime = getDuration(duration);
-  let inWatchlist = ``;
-  let watched = ``;
-  let favorite = ``;
-  let ratingTemp = ``;
-  let termGenre = `Genre`;
-  if (genres.length > 1) {
-    termGenre = `Genres`;
-  }
-  if (isInWatchlist) {
-    inWatchlist = `checked`;
-  }
-  if (isWatched) {
-    watched = `checked`;
-    ratingTemp = ratingTemplate(card);
-  }
-  if (isFavorite) {
-    favorite = `checked`;
-  }
-  if (descriptionText.length > 140) {
-    descriptionText = descriptionText.slice(0, 139) + `...`;
-  }
+  const descriptionText = description.length > 140 ? description.slice(0, 139) + `...` : description;
+  const runtime = getDuration(duration);
+  const inWatchlist = isInWatchlist ? `checked` : ``;
+  const watched = isWatched ? `checked` : ``;
+  const favorite = isFavorite ? `checked` : ``;
+  const ratingTemp = isWatched ? ratingTemplate(card) : ``;
+  const termGenre = genres.length > 1 ? `Genres` : `Genre`;
+
   return (
     `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -162,7 +133,7 @@ const createPopupTemplate = (card) => {
             </table>
 
             <p class="film-details__film-description">
-            ${description}
+            ${descriptionText}
             </p>
           </div>
         </div>
@@ -197,7 +168,7 @@ export default class Popup extends AbstractComponent {
     return createPopupTemplate(this._card);
   }
 
-  setClosePopupHandler(handler) {
+  setCloseButtonHandler(handler) {
     this.getElement().querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, handler);
   }

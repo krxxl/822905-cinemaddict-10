@@ -37,7 +37,7 @@ export default class Filter extends AbstractComponent {
     return createSiteNavigationTemplate(this._filters);
   }
 
-  setFilterChangeHandler(handler) {
+  setChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
       const filterName = getFilterNameById(evt.target.id);

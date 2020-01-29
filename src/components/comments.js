@@ -1,35 +1,17 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {formatDateComment} from '../utils/common.js';
 
-const getEmojiUrl = (emoji) => {
-  switch (emoji) {
-    case `sleeping`:
-      return `images/emoji/sleeping.png`;
-    case `trophy`:
-      return `images/emoji/trophy.png`;
-    case `angry`:
-      return `images/emoji/angry.png`;
-    case `smile`:
-      return `images/emoji/smile.png`;
-    case `puke`:
-      return `images/emoji/puke.png`;
-  }
-  return false;
-};
 
 const commentTemplate = (comment) => {
-  let {emoji, text, author, commentDay, id} = comment;
+  const {emoji, text, author, commentDay, id} = comment;
 
-  const emojiUrl = getEmojiUrl(emoji);
+  const commentText = text.length > 140 ? text.slice(0, 139) + `...` : text;
 
-  if (text.length > 140) {
-    text = text.slice(0, 139) + `...`;
-  }
-  const description = window.he.encode(text);
+  const description = window.he.encode(commentText);
   return (
     `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
-      <img src=${emojiUrl} width="55" height="55" alt="emoji">
+      <img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji">
     </span>
     <div>
       <p class="film-details__comment-text">${description}</p>
@@ -114,7 +96,7 @@ export default class Comments extends AbstractSmartComponent {
     this.setCloseButtonClickHandler(this._setCloseHandler);
   }
 
-  setSendCommentHandler(handler) {
+  setSendHandler(handler) {
     this.getElement().querySelector(`.film-details__comment-input`)
       .addEventListener(`keydown`, handler);
 

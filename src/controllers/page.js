@@ -6,14 +6,15 @@ import ShowMoreButtonComponent from '../components/show-more-button.js';
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {SortType} from '../components/sort.js';
 import MovieController from './card.js';
+import {RequestType} from './card';
 
 const SHOWING_CARDS_COUNT_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 
 
-const renderCards = (container, cards, onDataChange, onViewChange) => {
+const renderCards = (container, cards, onDataChange, onViewChange, api) => {
   return cards.map((card) => {
-    const movieController = new MovieController(container, onDataChange, onViewChange);
+    const movieController = new MovieController(container, onDataChange, onViewChange, api);
     movieController.render(card);
 
     return movieController;
@@ -42,7 +43,7 @@ export default class PageController {
     this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
 
     this._siteFilmListContainerElement = this._mainListComponent.getElement().querySelector(`.films-list__container`);
-    this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._sortComponent.setSortingTypeChangeHandler(this._onSortTypeChange);
     this._cardsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
@@ -83,7 +84,7 @@ export default class PageController {
 
   _renderCards(cards) {
 
-    const newCards = renderCards(this._siteFilmListContainerElement, cards, this._onDataChange, this._onViewChange);
+    const newCards = renderCards(this._siteFilmListContainerElement, cards, this._onDataChange, this._onViewChange, this._api);
     this._showedCardsControllers = this._showedCardsControllers.concat(newCards);
     this._showingCardsCount = this._showedCardsControllers.length;
   }
@@ -92,7 +93,7 @@ export default class PageController {
     let countOfAllRating = 0;
 
     const getSortByRating = (arr) => {
-      return arr.sort((a, b) => +a.rating > +b.rating ? -1 : 1);
+      return arr.sort((a, b) => b.rating - a.rating);
     };
 
     this._cardsModel.getCards().forEach((card) => {
@@ -108,7 +109,7 @@ export default class PageController {
 
     const siteTopRatedElements = topRated.getElement().querySelector(`#top-rated .films-list__container`);
 
-    const newCards = renderCards(siteTopRatedElements, sortByRating.slice(0, 2), this._onDataChange, this._onViewChange);
+    const newCards = renderCards(siteTopRatedElements, sortByRating.slice(0, 2), this._onDataChange, this._onViewChange, this._api);
     this._showedCardsControllers = this._showedCardsControllers.concat(newCards);
   }
 
@@ -132,7 +133,7 @@ export default class PageController {
 
     const siteMostCommentsElements = mostCommented.getElement().querySelector(`#most-commented .films-list__container`);
 
-    const newCards = renderCards(siteMostCommentsElements, sortByComments.slice(0, 2), this._onDataChange);
+    const newCards = renderCards(siteMostCommentsElements, sortByComments.slice(0, 2), this._onDataChange, this._api);
     this._showedCardsControllers = this._showedCardsControllers.concat(newCards);
 
   }
@@ -152,7 +153,7 @@ export default class PageController {
 
     switch (sortType) {
       case SortType.RATING:
-        sortedCards = this._cardsModel.getCards().slice().sort((a, b) => +a.rating > +b.rating ? -1 : 1);
+        sortedCards = this._cardsModel.getCards().slice().sort((a, b) => b.rating - a.rating);
         break;
       case SortType.DATE:
         sortedCards = this._cardsModel.getCards().slice().sort((a, b) => a.date > b.date ? -1 : 1);
@@ -185,7 +186,7 @@ export default class PageController {
   }
 
   _onDataChange(CardController, oldData, newData, type) {
-    if (type === `cardType`) {
+    if (type === RequestType.CARD) {
       this._api.updateCard(oldData.id, newData)
           .then((cardModel) => {
 
@@ -199,7 +200,7 @@ export default class PageController {
           .catch(() => {
             CardController.shakeRating();
           });
-    } else if (type === `commentType`) {
+    } else if (type === RequestType.COMMENT) {
       this._api.createComment(oldData.id, newData)
       .then((newCard) => {
         CardController.render(newCard);

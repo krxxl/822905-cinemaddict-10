@@ -11,7 +11,15 @@ const createColor = () => {
   return `#ffe800`;
 };
 
-const createArray = (cards, dateFrom, dateTo) => {
+const FilterByDate = {
+  BY_DAY: `statistic-today`,
+  BY_WEEK: `statistic-week`,
+  BY_MONTH: `statistic-month`,
+  BY_YEAR: `statistic-year`,
+  DEFAULT: `statistic-all-time`,
+};
+
+const createFiltredArr = (cards, dateFrom, dateTo) => {
   return cards.slice().filter((card) => {
     const watched = new Date(card.dateWatched);
     return watched >= dateFrom && watched <= dateTo;
@@ -59,7 +67,7 @@ const sortArrays = (arrayLabel, arrayData) => {
   return {genresLabels, sortedGenres};
 };
 
-const getArrays = (cards) => {
+const getSortedArrs = (cards) => {
   const genresLabels = getGenresLabels(cards);
   const genresData = getGenresData(genresLabels, cards);
 
@@ -86,7 +94,7 @@ const totalDuration = (cards) => {
 
 const getMostWatcheble = (cards) => {
 
-  const {genresLabels, sortedGenres} = getArrays(cards);
+  const {genresLabels, sortedGenres} = getSortedArrs(cards);
 
   const maxIndex = sortedGenres.indexOf(Math.max.apply(null, sortedGenres));
 
@@ -95,7 +103,7 @@ const getMostWatcheble = (cards) => {
 };
 
 const renderGenresChart = (tagsCtx, cards) => {
-  const {genresLabels, sortedGenres} = getArrays(cards);
+  const {genresLabels, sortedGenres} = getSortedArrs(cards);
 
   return new Chart(tagsCtx, {
     plugins: [ChartDataLabels],
@@ -245,25 +253,6 @@ export default class Statistics extends AbstractSmartComponent {
     this._renderCharts();
   }
 
-
-  _renderCharts() {
-    const element = this.getElement();
-
-    const genresCtx = element.querySelector(`.statistic__chart`);
-
-    this._resetCharts();
-
-    this._genresChart = renderGenresChart(genresCtx, this._cards);
-
-  }
-
-  _resetCharts() {
-    if (this._genresChart) {
-      this._genresChart.destroy();
-      this._genresChart = null;
-    }
-  }
-
   recoveryListeners() {
     this.setPeriodChangeHandler();
   }
@@ -290,49 +279,49 @@ export default class Statistics extends AbstractSmartComponent {
 
   getArray(filter, array) {
 
-    let newArray = [];
+    let filtredArr = [];
     const dateTo = new Date();
     let dateFrom = null;
     switch (filter) {
-      case `statistic-all-time`:
-        newArray = array;
+      case FilterByDate.DEFAULT:
+        filtredArr = array;
         break;
-      case `statistic-today`:
+      case FilterByDate.BY_DAY:
         dateFrom = (() => {
           const d = new Date(dateTo);
           d.setDate(d.getDate() - 1);
           return d;
         })();
 
-        newArray = createArray(array, dateFrom, dateTo);
+        filtredArr = createFiltredArr(array, dateFrom, dateTo);
         break;
-      case `statistic-week`:
+      case FilterByDate.BY_WEEK:
         dateFrom = (() => {
           const d = new Date(dateTo);
           d.setDate(d.getDate() - 7);
           return d;
         })();
-        newArray = createArray(array, dateFrom, dateTo);
+        filtredArr = createFiltredArr(array, dateFrom, dateTo);
         break;
-      case `statistic-month`:
+      case FilterByDate.BY_MONTH:
         dateFrom = (() => {
           const d = new Date(dateTo);
           d.setDate(d.getMonth() - 1);
           return d;
         })();
-        newArray = createArray(array, dateFrom, dateTo);
+        filtredArr = createFiltredArr(array, dateFrom, dateTo);
         break;
-      case `statistic-year`:
+      case FilterByDate.BY_YEAR:
         dateFrom = (() => {
           const d = new Date(dateTo);
           d.setDate(d.getDate() - 364);
           return d;
         })();
-        newArray = createArray(array, dateFrom, dateTo);
+        filtredArr = createFiltredArr(array, dateFrom, dateTo);
         break;
     }
 
-    return newArray;
+    return filtredArr;
   }
 
   setPeriodChangeHandler() {
@@ -342,5 +331,23 @@ export default class Statistics extends AbstractSmartComponent {
 
       this.rerender(this.getArray(this._filterName, this._allCards));
     });
+  }
+
+  _renderCharts() {
+    const element = this.getElement();
+
+    const genresCtx = element.querySelector(`.statistic__chart`);
+
+    this._resetCharts();
+
+    this._genresChart = renderGenresChart(genresCtx, this._cards);
+
+  }
+
+  _resetCharts() {
+    if (this._genresChart) {
+      this._genresChart.destroy();
+      this._genresChart = null;
+    }
   }
 }
