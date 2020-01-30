@@ -4,6 +4,7 @@ import {formatDateYearOnly, getDuration} from '../utils/common.js';
 const createCardTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, comments} = card;
   const countComments = comments.length;
+  const descriptionText = description.length > 140 ? description.slice(0, 139) + `...` : description;
   let classWatchlist = ``;
   let classWatched = ``;
   let classFavorite = ``;
@@ -28,7 +29,7 @@ const createCardTemplate = (card) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src=${poster} alt="" class="film-card__poster">
-    <p class="film-card__description">${description}</p>
+    <p class="film-card__description">${descriptionText}</p>
     <a class="film-card__comments">${countComments} comments</a>
     <form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${classWatchlist}">Add to watchlist</button>

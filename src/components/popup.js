@@ -66,7 +66,6 @@ const ratingTemplate = (card) => {
 const createPopupTemplate = (card) => {
   const {title, poster, rating, date, duration, genres, description, isInWatchlist, isWatched, isFavorite, age, director, writers, actors, country, titleOrigin} = card;
   const genre = genres.map((it) => genresTemplate(it)).join(`\n`);
-  const descriptionText = description.length > 140 ? description.slice(0, 139) + `...` : description;
   const runtime = getDuration(duration);
   const inWatchlist = isInWatchlist ? `checked` : ``;
   const watched = isWatched ? `checked` : ``;
@@ -133,7 +132,7 @@ const createPopupTemplate = (card) => {
             </table>
 
             <p class="film-details__film-description">
-            ${descriptionText}
+            ${description}
             </p>
           </div>
         </div>
